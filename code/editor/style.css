@@ -1,0 +1,39 @@
+#editor {
+  height: 500px; 
+  width: 500px;
+}
+
+#wrapper {
+  height: 510px; 
+  width: 510px;
+}
+
+#result {
+  height: 100px; 
+  width: 500px;
+  background-color: grey;
+}
+
+#version{
+  float: left;
+  margin-left: 20px;
+}
+
+#sample{
+  float: left;
+  margin-left: 20px;
+}
+
+#language{
+  float: left;
+  margin-left: 20px;
+}
+
+#options {
+  overflow: auto;
+  width: 100%
+}
+
+.sample{
+  visibility: hidden;
+}  

@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Code Editor</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="script.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+<body>
+  <div id="header">
+    <h1>Web-based Code Editor</h1>
+  </div>
+  <div id="content">
+    <div id="options">
+      <div id="language">
+        Language: 
+        <select id="languageselector" onchange="changeLanguage()">
+          <option value="tcl">Tcl</option>
+          <option value="xotcl">XOTcl</option>
+          <option value="nx">NX</option>
+        </select>
+      </div>
+      <div id="sample">
+        Scripts: 
+        <select id="scriptselector" onchange="changeScript()">
+          <option value="none">none</option>
+          <option value="nx">NX</option>
+          <option value="xotcl">XOTcl</option>
+        </select>
+      </div>         
+    </div>
+    <div id="wrapper">
+    <div id="editor"></div>
+      <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
+      <script>
+        var editor = ace.edit("editor");
+        editor.session.setMode("ace/mode/javascript");
+      </script>
+    </div>  
+    <div id="operations">
+      <input type="submit" value="Submit" />
+    </div>
+    <div id="result">
+    </div>
+  </div>
+  
+<script type="text/editor" id="none"></script>
+
+<textarea class="sample" id="nx">
+package require nx
+
+nx::Class create Greeter {
+  :property name:required
+  :public method "say hello" {} {
+    puts "Welcome ${:name}!"
+  }
+  :public method "say bye" {} {
+    puts "Goodbye ${:name}!"
+  }
+}
+</textarea>
+
+<textarea class="sample" id="xotcl">
+ package require XOTcl
+
+xotcl::Class create Greeter \
+  -parameter name
+Greeter instproc say_hello {} {
+  my instvar name
+  puts "Welcome $name!"
+}
+Greeter instproc say_bye {} {
+  my instvar name
+  puts "Goodbye $name!"
+}
+</textarea>
+
+</body>
+</head>
