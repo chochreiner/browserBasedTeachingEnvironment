@@ -42,5 +42,11 @@
 ## T.4.2 Einbinden der Ergebnisse im/um das Textfeld
 * bei Fehler wenn möglich Zeile im Editor anzeigen(Zeileninfo parsen) ansonsten Output anzeigen
 
+## notes
+* serverseitige scriptverwaltung: 2 methoden
+- alle scripts
+- gib mir das script
+
+
 # References
 * https://github.com/ajaxorg/ace/wiki/Embedding---API

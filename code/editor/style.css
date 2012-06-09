@@ -1,16 +1,16 @@
 #editor {
   height: 500px; 
-  width: 500px;
+  width: 900px;
 }
 
 #wrapper {
   height: 510px; 
-  width: 510px;
+  width: 910px;
 }
 
 #result {
   height: 100px; 
-  width: 500px;
+  width: 900px;
   background-color: grey;
 }
 

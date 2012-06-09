@@ -16,6 +16,42 @@ function changeScript() {
 }
 
 
+function loadSamples(name) {
+var xmlhttp;
+if (window.XMLHttpRequest) {
+    xmlhttp=new XMLHttpRequest();
+  } else{
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.onreadystatechange=function() {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+    editor.setValue("moep");
+    //document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+    }
+  }
+  xmlhttp.open("GET",url,true);
+  xmlhttp.send();
+}  
+
+function loadXMLDoc(url, option) {
+var xmlhttp;
+if (window.XMLHttpRequest) {
+    xmlhttp=new XMLHttpRequest();
+  } else{
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.onreadystatechange=function() {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+    editor.setValue("moep");
+    //document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+    }
+  }
+  xmlhttp.open("GET",url,true);
+  xmlhttp.send();
+}
+
+
+
 
 
 
