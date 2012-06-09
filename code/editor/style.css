@@ -37,3 +37,9 @@
 .sample{
   visibility: hidden;
 }  
+
+#result{
+  color:white;
+  padding: 10px;
+  overflow:auto;
+}

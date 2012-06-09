@@ -40,26 +40,40 @@
       </script>
     </div>  
     <div id="operations">
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Submit" onclick="submitScript()"/>
     </div>
-    <div id="result">
-    </div>
+    <pre id="result">
+    </pre>
   </div>
   
 <script type="text/editor" id="none"></script>
 
 <textarea class="sample" id="nx">
-package require nx
+#package require XOTcl
+#namespace import ::xotcl::*
 
-nx::Class create Greeter {
-  :property name:required
-  :public method "say hello" {} {
-    puts "Welcome ${:name}!"
-  }
-  :public method "say bye" {} {
-    puts "Goodbye ${:name}!"
-  }
+#proc functions + commands
+puts "\n \n Commands:"
+foreach {i} [info commands] {
+  if {![info exists availablecommands]} {
+    set availablecommands $i
+  } else {
+    set availablecommands "$availablecommands|$i"
+  } 
 }
+foreach {i} [info functions] {
+  if {![info exists availablecommands]} {
+    set availablecommands $i
+  } else {
+    set availablecommands "$availablecommands|$i"
+  } 
+}
+
+puts $availablecommands
+
+#http://www.tcl.tk/man/tcl8.5/TclCmd/info.htm#M33
+
+# TODO: constants, things like instvar, ...
 </textarea>
 
 <textarea class="sample" id="xotcl">
