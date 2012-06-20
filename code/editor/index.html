@@ -49,31 +49,26 @@
 <script type="text/editor" id="none"></script>
 
 <textarea class="sample" id="nx">
-#package require XOTcl
-#namespace import ::xotcl::*
+#String
+set y "xxxx" 
+set y "xxxx "cssdsdsdsd" yyyy"
 
-#proc functions + commands
-puts "\n \n Commands:"
-foreach {i} [info commands] {
-  if {![info exists availablecommands]} {
-    set availablecommands $i
-  } else {
-    set availablecommands "$availablecommands|$i"
-  } 
-}
-foreach {i} [info functions] {
-  if {![info exists availablecommands]} {
-    set availablecommands $i
-  } else {
-    set availablecommands "$availablecommands|$i"
-  } 
-}
+set x "xxxxxx
+      sdsdasdasd
+   ssadsadasd"
 
-puts $availablecommands
+#variables
+$name
 
-#http://www.tcl.tk/man/tcl8.5/TclCmd/info.htm#M33
+$name(key)
 
-# TODO: constants, things like instvar, ...
+${name} 
+
+${subst}$itut(ions)
+
+
+
+
 </textarea>
 
 <textarea class="sample" id="xotcl">

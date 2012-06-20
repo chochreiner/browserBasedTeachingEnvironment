@@ -147,7 +147,48 @@ var TclHighlightRules = function() {
 
     this.$rules = {
         "start" : [
-            {
+           {
+                token : "comment",
+                regex : "#.*$"
+            }, {
+                token : "string", // single line
+                regex : '[^\\\\]["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
+            }, {
+            token : "string",           // multi line """ string start
+            merge : true,
+            regex : '[^"\\\\]["]',
+            next : "qqstring"
+            }, {
+                token : "variable.instancce", // variable tcl
+                regex : "[$](?:[a-zA-Z_]|\d)+(?:[(](?:[a-zA-Z_]|\d)+[)])?"
+            }, {
+                token : "variable.instancce", // variable tcl with braces
+                regex : "[$]{?(?:[a-zA-Z_]|\d)+}?"
+            }, {
+                token : "variable.instancce", // variable NX
+                regex : "[$]{[:](?:[a-zA-Z_]|\d)+}"
+            }, {
+                token : "paren.lparen",
+                regex : "[[({]"
+            }, {
+                token : "paren.rparen",
+                regex : "[\\])}]"
+            }, {
+                token : "text",
+                regex : "\\s+"
+            }
+        ],
+        "qqstring" : [ {
+            token : "string", // multi line """ string end
+            regex : '(?:[^\\\\]|\\\\.)*?["]',
+            next : "start"
+        }, {
+            token : "string",
+            merge : true,
+            regex : '.+'
+        } ]  
+    };
+      /*      {
                 token : "comment",
                 regex : "#.*$"
             }, {
@@ -233,7 +274,7 @@ var TclHighlightRules = function() {
                 regex : ".+"
             }
         ]
-    };
+    };*/
 };
 
 oop.inherits(TclHighlightRules, TextHighlightRules);

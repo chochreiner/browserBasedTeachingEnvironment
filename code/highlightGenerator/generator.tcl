@@ -23,3 +23,7 @@ puts $availablecommands
 #http://www.tcl.tk/man/tcl8.5/TclCmd/info.htm#M33
 
 # TODO: constants, things like instvar, ...
+
+#xotcl object info methods
+
+#xotcl class info methods

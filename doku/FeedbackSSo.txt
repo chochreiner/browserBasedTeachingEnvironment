@@ -1,0 +1,219 @@
+Die 12 Tcl-Syntaxregeln:
+
+http://www2.tcl.tk/10259
+
+Eine Deutung als Grammatik:
+http://rosettacode.org/wiki/Category:Tcl
+
+* Syntaxbeispiele für (XO)Tcl
+* Syntaxbesonderheiten für (XO)Tcl z.B.: [*], ...
+
+Ich schlage folgendes Vorgehen vor: Ziel ist es, die Herausstellungsregeln in ACE auf diese 12 Regeln auszurichten (und nicht mehr). Das macht einige Dinge einfacher. Beispiel kommt weiter unten, bzgl. Commands [1] und Methodennamen.
+
+Damit Du Dir allerdings auch Anschauungsbeispiele generieren kannst, schlage ich vor, Du installierst Dir Kommodo Edit:
+
+http://www.activestate.com/komodo-edit
+(ActiveState ist einer der kommerziellen Hauptträger der Tcl Gemeinde)
+
+Komodo Edit ist ein Anschauungsbeispiel im positiven wie negativen Sinne, es hilft in unserer Kommunikation (hoffe ich).
+
+Darin kannst Du Dir dann Tcl-Skriptbeispiele farblich auszeichnen lassen, zur Orientierung und zum Abgleich.
+
+Zu den relevanten der zwölf Regeln (der Einfachheit nach geordnet):
+http://www2.tcl.tk/10259
+
+[4] Double quotes
+
+Das ist einfach, solche Blöcke sind als string (im ACE Token-Sinne) auszuweisen. Vorsicht bei der Interaktion mit [7] (sh. unten)!
+
+Achte darauf, dass die "Balancedness" der Quotes bedacht wird:
+set y "xxxx "cssdsdsdsd"
+
+Hier sollte cssdsdsdsd" nicht als Teil des "" markiert sein.
+
+Achtung auf mehrzeilige double quotes:
+
+set x "xxxxxx
+      sdsdasdasd
+   ssadsadasd"
+
+Das ist ein gültige und auszuweisende Schreibweise für den Wert von x (sh. Kommodo).
+
+[8] Variablen-Substitution:
+
+Tcl + XOTcl:
+$name, $name(key), ${name} gehören als Variablen markiert
+
+NX:
+${:name} wäre eine Objektvariable (d.h. my instvar name; $name in XOTcl)
+
+Wenn ich das richtig sehe, kann man in ACE eigene Tokens (CSS-Klassen) definieren, wie etwa "instance.variable" in Deiner Ruby Vorlage:
+
+https://bitbucket.org/chhochreiner/web-based-code-editor/src/48096ffcc157/code/editor/src/mode-tcl.js
+
+Das könnte man für NX auch vorsehen! (auch wenn man farblich einmal identisch darstellt)
+
+Stresstest:
+${subst}$itut(ions)
+
+Heisst: Setze Wert eine (skalaren) Variable "subst" ([set subst 1]) und den Arraywert zum Key "ions" aus dem Array "itut". ([set itut(ions) 2]). Ergebnis: 12
+
+[7] Command substitution (CS): "[" + "]"
+
+set y [set x 1]
+
+Innerhalb der CS-Braces soll die Syntaxauszeichnung auch passieren, also in obiger Zeile sollen beide "set" als command markiert sein.
+
+Das soll auch gelten, wenn die CS-Braces in einem Hochkomma-Stringblock eingeschlossen sind.
+
+set y "[set x 1] hallo"
+
+auch hier sollen beide "set" markiert sein, und das zweite set nicht als string literal.
+
+(Vorsicht: Kommodo Edit zeigt das *nicht* gewünschte Verhalten!)
+
+Balancedness ist auch wichtig.
+
+[6] Braces : "{" + "}"
+
+Hier gilt dasselbe wie für [7]
+
+[9a] Line continuation (= Backslash substitution mit newline)
+
+\<newline>whiteSpace
+          A single space character replaces the backslash, newline,
+          and all spaces and tabs after the newline. This
+          backslash sequence is unique in that it is replaced
+          in a separate pre-pass before the command is actually
+          parsed. This means that it will be replaced even when it
+          occurs between braces, and the resulting space will be
+          treated as a word separator if it isn't in braces or
+          quotes.
+
+Der Backslash "\" wird *außerhalb* von Quotes [4] und Braces [6] für mehrzeilige Kommandos verwendet:
+
+set x \
+   1
+
+wird als
+
+set x 1
+
+evaluiert
+
+Das ist für sich alleine genommen nicht wichtig, aber später dann. sh [1] unten.
+
+Wichtig: Dem "\" muss ein whitespace-Zeichen folgen (\s im regexp sinne). Ein:
+
+set x \1
+
+ist kein mehrzeiliges Kommando, sondern hier spielt "\" die Rolle des Escape-Zeichens (sh. [9b]).
+
+[9b] Backslash escaping (backslash sequences)
+
+Innerhalb eines Wortes, ist der Backslash das Escape Zeichen:
+
+set x "\[set x 1 \]"
+
+Hier soll das innere set usw. *nicht* als command ausgezeichnet werden, sondern als string block (also das Gegenteil von [7], weil "\[" die Kommando-Substitutionswirkung aufheben.
+
+[1] Commands
+
+Ich habe gestern nach Deinem Besuch etwas nachgedacht und bin zu dem Schluss gekommen, dass es für Tcl einen einfacheren Weg gibt (sofern man mit ACE dorthin kommt), der das Generieren von expliziten Schlüsselwortlisten (d.h. im ACE Sinne alles über builtinFunctions o.dgl. zu lösen) nicht notwendig macht.
+
+Dieser "Keyword-basierte" Ansatz hat Nachteile: Man muss die Liste generieren und für unterschiedliche Versionen immer aktualisieren. Aber nicht nur das:
+
+proc foo {p1} {;}
+foo 1;
+^^^
+
+Das foo, obwohl es ein benutzerdefiniertes Kommando (eine proc) ist, wird nicht markiert, das es nicht in der keyword list vorkommt. Und so weiter.
+
+Wenn es mit ACE nicht besser geht, lassen wir es so (Komodo Edit macht es auch nicht besser!). Aber, bevor wir aufgeben, versuchen wir folgende einfache Regel dank Tcl-Syntax:
+
+Alles zwischen einem Command-Separator (;, \n) ist ein Kommando, das nach Whitespace-Trennung aus Wort besteht (1. Wort: foo, 2. Wort: 1)
+
+Regel: Jedes erste Wort in einem Command wird als "command" (im ACE Sinne) markiert.
+
+Wenn das klappt, brauchen wir für diesen Zweck keine Keyword-Listen mehr. Die builtin-Kommands (set, ...), benutzerdefinierten procs und XOTcl/NX Objekte wären davon abgedeckt.
+
+Den Strichpunkt ";" sollte man als Schlüsselzeichen ausweisen. Also farblich hervorheben.
+
+[5] Argument expansion
+
+Das ist der {*} Operator. Hier mache es wie Komodo Edit: Einfach als Schlüsselwort ausweisen, danach sollen die anderen anwendbaren Regeln zur Geltung kommen.
+
+{*}$name -> $name als Variable nach [8]
+{*}[list foo 1] -> gleichbedeutend mit dem foo aufruf oben, also Darstellung nach [7]
+
+[10] Comments
+
+Das ist nur auf ersten Blick trivial: Zeilen mit # sind als comment auszuweisen. Vorsicht:
+
+# my comment
+set x 1; # my comment \
+         dsdsdsdds
+
+# nach ";" (command separator) und line continuation (sh. [9a]) gelten auch für Kommentare! D.h. "dsdsdsdds" ist ein Teil des Kommentars!
+
+Besonderheiten, die nicht durch die 12 Regeln gedeckt sind:
+
+ad [1] Commands: Methodennamen (XOTcl/NX)
+
+Lt. Regel 1 sind in [foo 1] (wie oben) foo als erstes Wort die Kommando-Proc und 1 als 2. Wort das 1. Argument. Im OO Sinne, also wenn foo ein Object wäre:
+
+xotcl::Object create foo
+foo 1
+
+Dann ist das erste Wort immer noch ein Kommando (eben ein Kommando-Objekt), aber das 2. Wort (1. Argument) ist der Methodenname. Wenn man diese auszeichnen will, brauchen wir dafür eine besondere Regel, da sie ja als das 1. Argument eines Tcl-Kommandos nach [1] (sh. oben) nicht behandelt sind.
+
+Für die Standardmethoden aus NX/XOTcl:
+
+nx::Object info methods
+-> volatile method alias configure copy delete info property mixin forward public eval destroy protected private require variable filter move contains
+
+nx::Class info methods
+-> method new alias delete create info property forward mixin variable class filter
+
+xotcl::Object info methods
+xotcl::Class info methods
+
+... brauchen wir also wieder Schlüsselwort-Listen, die generiert werden. Allerdings sollen diese nur markiert/ausgezeichnet werden, wenn der Begriff nach einem Kommando (im Sinne von [1]) kommt.
+
+Also
+
+nx::Object create foo
+foo method method {} {;}
+
+foo -> command
+1. method -> method
+2. method -> text
+
+das zweite method soll nicht als Schlüsselwort erkannt werden.
+
+ad [4,6] Illegal text:
+
+nach "" und {} dürfen direkt danach keine Zeichen folgen, sondern nur nach einem Whitespace:
+
+set x "1"x; # -> illegal
+set x {1}x; # -> illegal
+
+diesen Text könnte man als fehlerhaft erkennen (rot auszeichnen o.dgl.)
+
+* Hinweis wie man sich die aktuell installierten TCL Versionen ausgeben lassen kann
+
+Aus Sicht einer Interpreters gibt es nur eine Tcl-Version (man hat immer nur eine laufen), aber für XOTcl/NX kann man danach fragen:
+
+http://docs.activestate.com/activetcl/8.5/tcl/TclCmd/package.htm
+
+package versions nsf
+2.0b2 2.0b4
+% package versions XOTcl
+2.0b2 2.0b4
+% package versions nx
+2.0b2 2.0b4
+
+* Hinweis wie man die "relevanteste" Fehlerzeile bekommen kann
+
+sh. -errorline für catch:
+http://www.tcl.tk/man/tcl/TclCmd/catch.htm
