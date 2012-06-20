@@ -211,14 +211,14 @@ var TclHighlightRules = function() {
         ],
         "commentfollow" : [ 
             {
-                token : "text",
-                regex : "\\s+\\\\$",
-                merge : true,
+                token : "comment",
+                regex : ".*\\\\$",
                 next  : "commentfollow"
             }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
+              token : "comment",
+              merge : true,
+              regex : '.+',
+              next  : "start"
         } ],  
         "qqstring" : [ {
             token : "string", // multi line """ string end
