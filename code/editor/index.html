@@ -37,6 +37,7 @@
       <script>
         var editor = ace.edit("editor");
         editor.session.setMode("ace/mode/tcl");
+        editor.setTheme("ace/theme/monokai");
       </script>
     </div>  
     <div id="operations">
@@ -79,6 +80,16 @@ asdf \
 adsf
 
 kein comment
+
+set x 1; # my comment \
+         dsdsdsdds
+
+{*}
+;
+         
+alle "strings" gehen mit " an und dann geht es weiter; entweder mit string oder eval oder variable" --> braucht aber einen eigenen next --> innerhalb der stringumgebung und extern
+
+frage --> kann man mit einem 2. run drübergehen         
 
 
 </textarea>

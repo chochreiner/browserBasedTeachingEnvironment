@@ -91,16 +91,6 @@ Wenn das klappt, brauchen wir für diesen Zweck keine Keyword-Listen mehr. Die b
 Den Strichpunkt ";" sollte man als Schlüsselzeichen ausweisen. Also farblich hervorheben.
 
 
-[10] Comments
-
-Das ist nur auf ersten Blick trivial: Zeilen mit # sind als comment auszuweisen. Vorsicht:
-
-# my comment
-set x 1; # my comment \
-         dsdsdsdds
-
-# nach ";" (command separator) und line continuation (sh. [9a]) gelten auch für Kommentare! D.h. "dsdsdsdds" ist ein Teil des Kommentars!
-
 Besonderheiten, die nicht durch die 12 Regeln gedeckt sind:
 
 ad [1] Commands: Methodennamen (XOTcl/NX)

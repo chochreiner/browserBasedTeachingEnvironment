@@ -15,22 +15,22 @@ function changeScript() {
   editor.gotoLine(1);
 }
 
-function submitScript() {
-  if (Math.round(Math.random())) {
-    document.getElementById("result").innerHTML="result"
-  } else {
-    errorMessage= " Commands:\n"
-    + "invalid command name \"fore\"\n"
-    + "while executing\n"
-    + "fore ach {i} [info functions] {\n"
-    + "  if {![info exists availablecommands]} {\n"
-    + "    set availablecommands $i\n"
-    + "  } else {\n"
-    + "     set availablecommands \"$availabl...\"\n"
-    + " (file \"generator.tcl\" line 13)";
-    var line = errorMessage.match(/line (.*)\)$/);
-    editor.gotoLine(line[1]);
-    document.getElementById("result").innerHTML=errorMessage;    
-  }
-}
 
+function submitScript() {
+  var xmlhttp;
+  if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp=new XMLHttpRequest();
+  } else {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+   xmlhttp.onreadystatechange=function() {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+      var result = xmlhttp.responseText;
+      document.getElementById("result").innerHTML=result;
+      var line = result.match(/line (.*)\)$/);
+      editor.gotoLine(line[1]);
+    }
+  }
+  xmlhttp.open("GET","http://hal.lan:8081/"+window.btoa(editor.getValue()),true);
+  xmlhttp.send();
+}

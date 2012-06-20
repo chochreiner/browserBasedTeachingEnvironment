@@ -36,7 +36,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-define('ace/mode/tcl', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/tcl_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/range'], function(require, exports, module) {
+define('ace/mode/tcl', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/tcl_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/range', ], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
@@ -109,6 +109,8 @@ oop.inherits(Mode, TextMode);
     this.autoOutdent = function(state, doc, row) {
         this.$outdent.autoOutdent(doc, row);
     };
+    
+
 
 }).call(Mode.prototype);
 
@@ -128,9 +130,7 @@ var TclHighlightRules = function() {
         ("tell|socket|subst|open|eof|pwd|glob|list|pid|exec|auto_load_index|time|unknown|eval|lassign|lrange|fblocked|lsearch|auto_import|gets|case|lappend|proc|break|variable|llength|auto_execok|return|linsert|error|catch|clock|info|split|array|if|fconfigure|concat|join|lreplace|source|fcopy|global|switch|auto_qualify|update|close|cd|for|auto_load|file|append|lreverse|format|unload|read|package|set|binary|namespace|scan|apply|trace|seek|while|chan|flush|after|vwait|dict|continue|uplevel|foreach|lset|rename|fileevent|regexp|lrepeat|upvar|encoding|expr|unset|load|regsub|interp|exit|puts|incr|lindex|lsort|tclLog|string|round|wide|sqrt|sin|log10|double|hypot|atan|bool|rand|abs|acos|atan2|entier|srand|sinh|log|floor|tanh|tan|isqrt|int|asin|min|ceil|cos|cosh|exp|max|pow|fmod").split("|")
     );
 
-    var keywords = lang.arrayToMap(
-        ("").split("|")
-    );        //("alias|and|BEGIN|begin|break|case|class|def|defined|do|else|elsif|END|end|ensure|"__FILE__|finally|for|gem|if|in|__LINE__|module|next|not|or|private|protected|public|redo|rescue|retry|return|super|then|undef|unless|until|when|while|yield")
+    var keywords = lang.arrayToMap(   ("getExitHandler|setExitHandler|CopyHandler|__exitHandler|unsetExitHandler|uses|method|allinstances|parameter|new|instmixin|alloc|instparametercmd|instforward|create|info|slots|superclass|instinvar|instmixinguard|parameterclass|instfilterguard|instdestroy|unknown|instproc|autoname|recreate|instfilter|subst|isclass|configure|check|eval|requireNamespace|isobject|proc|lappend|instvar|move|exists|volatile|__next|istype|array|cleanup|filterguard|filtersearch|filter|contains|append|noinit|self|hasclass|set|parametercmd|mixin|defaultmethod|trace|ismixin|ismetaclass|procsearch|destroy|vwait|uplevel|extractConfigureArg|copy|init|forward|upvar|unset|mixinguard|invar|incr|abstract|class|Parameter|__unknown|uses|method|allinstances|parameter|new|instmixin|alloc|instparametercmd|instforward|create|info|slots|superclass|instinvar|instmixinguard|parameterclass|instfilterguard|instdestroy|unknown|instproc|autoname|recreate|instfilter|subst|isclass|configure|check|eval|requireNamespace|isobject|proc|lappend|instvar|move|exists|volatile|__next|istype|array|cleanup|filterguard|filtersearch|filter|contains|append|noinit|self|hasclass|set|parametercmd|mixin|defaultmethod|trace|ismixin|ismetaclass|procsearch|destroy|vwait|uplevel|extractConfigureArg|copy|init|forward|upvar|unset|mixinguard|invar|incr|abstract|class").split("|"));        //("alias|and|BEGIN|begin|break|case|class|def|defined|do|else|elsif|END|end|ensure|"__FILE__|finally|for|gem|if|in|__LINE__|module|next|not|or|private|protected|public|redo|rescue|retry|return|super|then|undef|unless|until|when|while|yield")
     
 
     var buildinConstants = lang.arrayToMap(("").split("|")
@@ -177,7 +177,7 @@ var TclHighlightRules = function() {
                 regex : "[$]{[:](?:[a-zA-Z_]|\d)+}"
             }, {
                 token : "keyword.operator",
-                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}"
+                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}|;"
             }, {
                 token : function(value) {
                     if (value == "self")
@@ -242,52 +242,7 @@ var TclHighlightRules = function() {
             }, {
                 token : "constant.language.boolean",
                 regex : "(?:true|false)\\b"
-            }, {
-                token : function(value) {
-                    if (value == "self")
-                        return "variable.language";
-                    else if (keywords.hasOwnProperty(value))
-                        return "keyword";
-                    else if (buildinConstants.hasOwnProperty(value))
-                        return "constant.language";
-                    else if (builtinVariables.hasOwnProperty(value))
-                        return "variable.language";
-                    else if (builtinFunctions.hasOwnProperty(value))
-                        return "support.function";
-                    else if (value == "debugger")
-                        return "invalid.deprecated";
-                    else
-                        return "identifier";
-                },
-                // TODO: Unicode escape sequences
-                // TODO: Unicode identifiers
-                regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
-            }, {
-                token : "keyword.operator",
-                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|\\b(?:in|instanceof|new|delete|typeof|void)"
-            }, {
-                token : "paren.lparen",
-                regex : "[[({]"
-            }, {
-                token : "paren.rparen",
-                regex : "[\\])}]"
-            }, {
-                token : "text",
-                regex : "\\s+"
-            }
-        ],
-        "comment" : [
-            {
-                token : "comment", // closing comment
-                regex : "^\=end$",
-                next : "start"
-            }, {
-                token : "comment", // comment spanning whole line
-                merge : true,
-                regex : ".+"
-            }
-        ]
-    };*/
+            }]*/
 };
 
 oop.inherits(TclHighlightRules, TextHighlightRules);

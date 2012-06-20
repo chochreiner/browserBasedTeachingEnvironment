@@ -1,5 +1,5 @@
-#package require XOTcl
-#namespace import ::xotcl::*
+package require XOTcl
+namespace import ::xotcl::*
 
 #proc functions + commands
 puts "\n \n Commands:"
@@ -19,11 +19,29 @@ foreach {i} [info functions] {
 }
 
 puts $availablecommands
+puts ""
+
+foreach {i} [xotcl::Object info methods] {
+  if {![info exists availablecommands1]} {
+    set availablecommands1 $i
+  } else {
+    set availablecommands1 "$availablecommands1|$i"
+  } 
+}
+
+foreach {i} [xotcl::Class info methods] {
+  if {![info exists availablecommands1]} {
+    set availablecommands1 $i
+  } else {
+    set availablecommands1 "$availablecommands1|$i"
+  } 
+}
+
+puts $availablecommands1
 
 #http://www.tcl.tk/man/tcl8.5/TclCmd/info.htm#M33
 
 # TODO: constants, things like instvar, ...
 
-#xotcl object info methods
-
-#xotcl class info methods
+#xotcl::Object info methods
+#xotcl::Class info methods
