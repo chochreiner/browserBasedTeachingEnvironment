@@ -151,6 +151,7 @@ Httpd::PortfolioWrk instproc response {} {;# Respond to the GET-query
   if {[catch {set result [interp eval $i $script]} msg -errorInfo]} {
     set result "Errormessage: $msg \n\n"
     append result "Stacktrace:\n  $::errorInfo"
+#    append result "Errorline:\n  $::errorline"
   }
 
   my sendDynamicString $result
@@ -162,16 +163,6 @@ Httpd::Wrk instproc handlereturn {i args} {
     append asdfghjkl {*}$args
     append asdfghjkl "\n"
 }
-
-#set i [interp create -safe]
-#interp hide $i lappend
-#interp alias $i lappend {} loggedLappend $i
-#proc loggedLappend {i args} {
-#    puts "logged invocation of lappend $args"
-#    interp invokehidden $i lappend {*}$args
-#}
-#interp eval $i $someUntrustedScript
-
 
 Httpd h1 -port $opt(-port) -root $opt(-root) -worker Httpd::PortfolioWrk
 vwait forever

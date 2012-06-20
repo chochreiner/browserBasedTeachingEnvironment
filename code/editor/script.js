@@ -11,6 +11,7 @@ function changeScript() {
     case "none" : editor.setValue(""); break;
     case "xotcl" : editor.setValue(document.getElementById("xotcl").value); break;
     case "nx" : editor.setValue(document.getElementById("nx").value); break;
+    case "intro" : editor.setValue(document.getElementById("intro").value); break;
   }
   editor.gotoLine(1);
 }
