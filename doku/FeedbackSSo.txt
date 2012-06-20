@@ -8,55 +8,6 @@ http://rosettacode.org/wiki/Category:Tcl
 * Syntaxbeispiele für (XO)Tcl
 * Syntaxbesonderheiten für (XO)Tcl z.B.: [*], ...
 
-Ich schlage folgendes Vorgehen vor: Ziel ist es, die Herausstellungsregeln in ACE auf diese 12 Regeln auszurichten (und nicht mehr). Das macht einige Dinge einfacher. Beispiel kommt weiter unten, bzgl. Commands [1] und Methodennamen.
-
-Damit Du Dir allerdings auch Anschauungsbeispiele generieren kannst, schlage ich vor, Du installierst Dir Kommodo Edit:
-
-http://www.activestate.com/komodo-edit
-(ActiveState ist einer der kommerziellen Hauptträger der Tcl Gemeinde)
-
-Komodo Edit ist ein Anschauungsbeispiel im positiven wie negativen Sinne, es hilft in unserer Kommunikation (hoffe ich).
-
-Darin kannst Du Dir dann Tcl-Skriptbeispiele farblich auszeichnen lassen, zur Orientierung und zum Abgleich.
-
-Zu den relevanten der zwölf Regeln (der Einfachheit nach geordnet):
-http://www2.tcl.tk/10259
-
-[4] Double quotes
-
-Das ist einfach, solche Blöcke sind als string (im ACE Token-Sinne) auszuweisen. Vorsicht bei der Interaktion mit [7] (sh. unten)!
-
-Achte darauf, dass die "Balancedness" der Quotes bedacht wird:
-set y "xxxx "cssdsdsdsd"
-
-Hier sollte cssdsdsdsd" nicht als Teil des "" markiert sein.
-
-Achtung auf mehrzeilige double quotes:
-
-set x "xxxxxx
-      sdsdasdasd
-   ssadsadasd"
-
-Das ist ein gültige und auszuweisende Schreibweise für den Wert von x (sh. Kommodo).
-
-[8] Variablen-Substitution:
-
-Tcl + XOTcl:
-$name, $name(key), ${name} gehören als Variablen markiert
-
-NX:
-${:name} wäre eine Objektvariable (d.h. my instvar name; $name in XOTcl)
-
-Wenn ich das richtig sehe, kann man in ACE eigene Tokens (CSS-Klassen) definieren, wie etwa "instance.variable" in Deiner Ruby Vorlage:
-
-https://bitbucket.org/chhochreiner/web-based-code-editor/src/48096ffcc157/code/editor/src/mode-tcl.js
-
-Das könnte man für NX auch vorsehen! (auch wenn man farblich einmal identisch darstellt)
-
-Stresstest:
-${subst}$itut(ions)
-
-Heisst: Setze Wert eine (skalaren) Variable "subst" ([set subst 1]) und den Arraywert zum Key "ions" aus dem Array "itut". ([set itut(ions) 2]). Ergebnis: 12
 
 [7] Command substitution (CS): "[" + "]"
 
@@ -139,12 +90,6 @@ Wenn das klappt, brauchen wir für diesen Zweck keine Keyword-Listen mehr. Die b
 
 Den Strichpunkt ";" sollte man als Schlüsselzeichen ausweisen. Also farblich hervorheben.
 
-[5] Argument expansion
-
-Das ist der {*} Operator. Hier mache es wie Komodo Edit: Einfach als Schlüsselwort ausweisen, danach sollen die anderen anwendbaren Regeln zur Geltung kommen.
-
-{*}$name -> $name als Variable nach [8]
-{*}[list foo 1] -> gleichbedeutend mit dem foo aufruf oben, also Darstellung nach [7]
 
 [10] Comments
 

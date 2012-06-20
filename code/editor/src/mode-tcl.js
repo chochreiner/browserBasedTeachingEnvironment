@@ -149,15 +149,23 @@ var TclHighlightRules = function() {
         "start" : [
            {
                 token : "comment",
+                merge : true,
+                regex : "#.*\\\\$",
+                next  : "commentfollow"
+            }, {
+                token : "comment",
                 regex : "#.*$"
             }, {
                 token : "string", // single line
                 regex : '[^\\\\]["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
-            token : "string",           // multi line """ string start
-            merge : true,
-            regex : '[^"\\\\]["]',
-            next : "qqstring"
+                token : "string", // single line
+                regex : '[^\\\\]["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
+            }, {
+                token : "string",           // multi line """ string start
+                merge : true,
+                regex : '[^"\\\\]["]',
+                next  : "qqstring"
             }, {
                 token : "variable.instancce", // variable tcl
                 regex : "[$](?:[a-zA-Z_]|\d)+(?:[(](?:[a-zA-Z_]|\d)+[)])?"
@@ -165,8 +173,31 @@ var TclHighlightRules = function() {
                 token : "variable.instancce", // variable tcl with braces
                 regex : "[$]{?(?:[a-zA-Z_]|\d)+}?"
             }, {
-                token : "variable.instancce", // variable NX
+                token : "variable.class", // variable NX
                 regex : "[$]{[:](?:[a-zA-Z_]|\d)+}"
+            }, {
+                token : "keyword.operator",
+                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}"
+            }, {
+                token : function(value) {
+                    if (value == "self")
+                        return "variable.language";
+                    else if (keywords.hasOwnProperty(value))
+                        return "keyword";
+                    else if (buildinConstants.hasOwnProperty(value))
+                        return "constant.language";
+                    else if (builtinVariables.hasOwnProperty(value))
+                        return "variable.language";
+                    else if (builtinFunctions.hasOwnProperty(value))
+                        return "support.function";
+                    else if (value == "debugger")
+                        return "invalid.deprecated";
+                    else
+                        return "identifier";
+                },
+                // TODO: Unicode escape sequences
+                // TODO: Unicode identifiers
+                regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
             }, {
                 token : "paren.lparen",
                 regex : "[[({]"
@@ -178,6 +209,17 @@ var TclHighlightRules = function() {
                 regex : "\\s+"
             }
         ],
+        "commentfollow" : [ 
+            {
+                token : "text",
+                regex : "\\s+\\\\$",
+                merge : true,
+                next  : "commentfollow"
+            }, {
+            token : "string",
+            merge : true,
+            regex : '.+'
+        } ],  
         "qqstring" : [ {
             token : "string", // multi line """ string end
             regex : '(?:[^\\\\]|\\\\.)*?["]',
@@ -186,38 +228,9 @@ var TclHighlightRules = function() {
             token : "string",
             merge : true,
             regex : '.+'
-        } ]  
+        } ]
     };
-      /*      {
-                token : "comment",
-                regex : "#.*$"
-            }, {
-                token : "comment", // multi line comment
-                merge : true,
-                regex : "^\=begin$",
-                next : "comment"
-            }, {
-                token : "string.regexp",
-                regex : "[/](?:(?:\\[(?:\\\\]|[^\\]])+\\])|(?:\\\\/|[^\\]/]))*[/]\\w*\\s*(?=[).,;]|$)"
-            }, {
-                token : "string", // single line
-                regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
-            }, {
-                token : "string", // single line
-                regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
-            }, {
-                token : "string", // backtick string
-                regex : "[`](?:(?:\\\\.)|(?:[^'\\\\]))*?[`]"
-            }, {
-                token : "text", // namespaces aren't symbols
-                regex : "::"
-            }, {
-                token : "variable.instancce", // instance variable
-                regex : "@{1,2}(?:[a-zA-Z_]|\d)+"
-            }, {
-                token : "variable.class", // class name
-                regex : "[A-Z](?:[a-zA-Z_]|\d)+"
-            }, {
+      /*   {
                 token : "string", // symbol
                 regex : "[:](?:[A-Za-z_]|[@$](?=[a-zA-Z0-9_]))[a-zA-Z0-9_]*[!=?]?"
            }, {
