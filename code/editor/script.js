@@ -31,6 +31,6 @@ function submitScript() {
       editor.gotoLine(line[1]);
     }
   }
-  xmlhttp.open("GET","http://hal.lan:8081/"+window.btoa(editor.getValue()),true);
+  xmlhttp.open("GET","http:/localhost:8081/"+window.btoa(editor.getValue()),true);
   xmlhttp.send();
 }
