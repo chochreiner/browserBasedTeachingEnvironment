@@ -36,13 +36,13 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-define('ace/mode/xotcl', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/xotcl_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/range', ], function(require, exports, module) {
+define('ace/mode/next', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/next_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/range', ], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
 var Tokenizer = require("../tokenizer").Tokenizer;
-var TclHighlightRules = require("./xotcl_highlight_rules").TclHighlightRules;
+var TclHighlightRules = require("./next_highlight_rules").TclHighlightRules;
 var MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutdent;
 var Range = require("../range").Range;
 
@@ -117,7 +117,7 @@ oop.inherits(Mode, TextMode);
 exports.Mode = Mode;
 });
 
-define('ace/mode/xotcl_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/lib/lang', 'ace/mode/text_highlight_rules'], function(require, exports, module) {
+define('ace/mode/next_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/lib/lang', 'ace/mode/text_highlight_rules'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");

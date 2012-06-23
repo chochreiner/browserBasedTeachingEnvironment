@@ -18,7 +18,7 @@
         Language: 
         <select id="languageselector" onchange="changeLanguage()">
           <option value="tcl">Tcl</option>
-          <option value="xotcl">XOTcl</option>
+          <option value="xotcl">XoTcl</option>
           <option value="nx">NX</option>
         </select>
       </div>
@@ -26,9 +26,10 @@
         Scripts: 
         <select id="scriptselector" onchange="changeScript()">
           <option value="none">none</option>
-          <option value="nx">NX</option>
-          <option value="xotcl">XOTcl</option>
+          <option value="dijkstra">Dijkstra</option>
+          <option value="sample">Sample</option>
           <option value="intro">intro</option>
+          <option value="xotcl">XoTcl</option>
         </select>
       </div>         
     </div>
@@ -42,7 +43,7 @@
       </script>
     </div>  
     <div id="operations">
-      <input type="submit" value="Submit" onclick="submitScript()"/>
+      <input type="submit" value="Evaluate" onclick="submitToServer()"/>
     </div>
     <pre id="result">
     </pre>
@@ -50,7 +51,7 @@
   
 <script type="text/editor" id="none"></script>
 
-<textarea class="sample" id="nx">
+<textarea class="sample" id="sample">
 #String
 set y "xxxx" 
 set y "xxxx "cssdsdsdsd" yyyy"
@@ -263,8 +264,6 @@ puts [square 2 ]
 </textarea>
 
 <textarea class="sample" id="xotcl">
-#Hochreiner Christoph, 0726292
-
 package require XOTcl
 namespace import ::xotcl::*
 
@@ -349,6 +348,51 @@ Stock s -symbol $opt(-symbol)
 s extractData [stockinfo getContent]
 s printData
 </textarea>
+
+
+
+<textarea class="sample" id="dijkstra">
+
+proc dijkstra {graph origin} {
+    # Initialize
+    dict for {vertex distmap} $graph {
+	dict set dist $vertex Inf
+	dict set path $vertex {}
+    }
+    dict set dist $origin 0
+    dict set path $origin [list $origin]
+ 
+    while {[dict size $graph]} {
+	# Find unhandled node with least weight
+	set d Inf
+	dict for {uu -} $graph {
+	    if {$d > [set dd [dict get $dist $uu]]} {
+		set u $uu
+		set d $dd
+	    }
+	}
+ 
+	# No such node; graph must be disconnected
+	if {$d == Inf} break
+ 
+	# Update the weights for nodes lead to by the node we've picked
+	dict for {v dd} [dict get $graph $u] {
+	    if {[dict exists $graph $v]} {
+		set alt [expr {$d + $dd}]
+		if {$alt < [dict get $dist $v]} {
+		    dict set dist $v $alt
+		    dict set path $v [list {*}[dict get $path $u] $v]
+		}
+	    }
+	}
+ 
+	# Remove chosen node from graph still to be handled
+	dict unset graph $u
+    }
+    return [list $dist $path]
+}
+</textarea>
+
 
 </body>
 </head>
