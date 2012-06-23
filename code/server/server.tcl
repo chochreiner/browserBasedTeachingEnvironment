@@ -96,7 +96,7 @@ Httpd::Wrk instproc sendFile {content} {
 Httpd::Wrk instproc sendDynamicString {content {contentType text/html}} {
   my instvar socket
   my sendLine "Content-Type: $contentType"
-  my sendLine "Content-Length: [string length $content]\n"
+  my sendLine "Content-Length: [string bytelength $content]\n"
   puts -nonewline $socket $content
 }
 Httpd::Wrk instproc readFile fn {
@@ -148,12 +148,13 @@ Httpd::PortfolioWrk instproc response {} {;# Respond to the GET-query
   my replyCode 200
   interp alias $i puts {} my handlereturn $i
   
-  if {[catch {set result [interp eval $i $script]} msg -errorInfo]} {
+  if {[catch {set result [interp eval $i $script]} msg x]} {
     set result "Errormessage: $msg \n\n"
-    append result "Stacktrace:\n  $::errorInfo"
-#    append result "Errorline:\n  $::errorline"
+    append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
+    append result "on line: [dict get $x -errorline] \n\n"
+    append result "xxxxxxxxxxxx"
   }
-
+puts $result
   my sendDynamicString $result
   my close
 }

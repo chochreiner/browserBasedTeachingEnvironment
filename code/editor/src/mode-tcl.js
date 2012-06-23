@@ -133,15 +133,6 @@ var TclHighlightRules = function() {
     var keywords = lang.arrayToMap(   ("getExitHandler|setExitHandler|CopyHandler|__exitHandler|unsetExitHandler|uses|method|allinstances|parameter|new|instmixin|alloc|instparametercmd|instforward|create|info|slots|superclass|instinvar|instmixinguard|parameterclass|instfilterguard|instdestroy|unknown|instproc|autoname|recreate|instfilter|subst|isclass|configure|check|eval|requireNamespace|isobject|proc|lappend|instvar|move|exists|volatile|__next|istype|array|cleanup|filterguard|filtersearch|filter|contains|append|noinit|self|hasclass|set|parametercmd|mixin|defaultmethod|trace|ismixin|ismetaclass|procsearch|destroy|vwait|uplevel|extractConfigureArg|copy|init|forward|upvar|unset|mixinguard|invar|incr|abstract|class|Parameter|__unknown|uses|method|allinstances|parameter|new|instmixin|alloc|instparametercmd|instforward|create|info|slots|superclass|instinvar|instmixinguard|parameterclass|instfilterguard|instdestroy|unknown|instproc|autoname|recreate|instfilter|subst|isclass|configure|check|eval|requireNamespace|isobject|proc|lappend|instvar|move|exists|volatile|__next|istype|array|cleanup|filterguard|filtersearch|filter|contains|append|noinit|self|hasclass|set|parametercmd|mixin|defaultmethod|trace|ismixin|ismetaclass|procsearch|destroy|vwait|uplevel|extractConfigureArg|copy|init|forward|upvar|unset|mixinguard|invar|incr|abstract|class").split("|"));        //("alias|and|BEGIN|begin|break|case|class|def|defined|do|else|elsif|END|end|ensure|"__FILE__|finally|for|gem|if|in|__LINE__|module|next|not|or|private|protected|public|redo|rescue|retry|return|super|then|undef|unless|until|when|while|yield")
     
 
-    var buildinConstants = lang.arrayToMap(("").split("|")
-    );
-//("true|TRUE|false|FALSE|nil|NIL|ARGF|ARGV|DATA|ENV|RUBY_PLATFORM|RUBY_RELEASE_DATE|RUBY_VERSION|STDERR|STDIN|STDOUT|TOPLEVEL_BINDING")
-
-    var builtinVariables = lang.arrayToMap(
-    ("").split("|")
-    );
-    //("\$DEBUG|\$defout|\$FILENAME|\$LOAD_PATH|\$SAFE|\$stdin|\$stdout|\$stderr|\$VERBOSE|$!|root_url|flash|session|cookies|params|request|response|logger")
-
     // regexp must not have capturing parentheses. Use (?:) instead.
     // regexps are ordered -> the first match is used
 
@@ -156,13 +147,17 @@ var TclHighlightRules = function() {
                 token : "comment",
                 regex : "#.*$"
             }, {
-                token : "string", // single line
-                regex : '[^\\\\]["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
+                token : "text", // last value before command
+                regex : '[;]|[/\r/]',
+                next  : "commandItem"
             }, {
                 token : "string", // single line
                 regex : '[^\\\\]["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
-                token : "string",           // multi line """ string start
+                token : "string", // single line
+                regex : '[^\\\\]["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
+            }, {
+                token : "string", // multi line """ string start
                 merge : true,
                 regex : '[^"\\\\]["]',
                 next  : "qqstring"
@@ -176,32 +171,26 @@ var TclHighlightRules = function() {
                 token : "variable.class", // variable NX
                 regex : "[$]{[:](?:[a-zA-Z_]|\d)+}"
             }, {
-                token : "keyword.operator",
-                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}|;"
+                token : "support.function",
+                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}"
             }, {
                 token : function(value) {
-                    if (value == "self")
-                        return "variable.language";
-                    else if (keywords.hasOwnProperty(value))
+                   if (keywords.hasOwnProperty(value))
                         return "keyword";
-                    else if (buildinConstants.hasOwnProperty(value))
-                        return "constant.language";
-                    else if (builtinVariables.hasOwnProperty(value))
-                        return "variable.language";
                     else if (builtinFunctions.hasOwnProperty(value))
-                        return "support.function";
-                    else if (value == "debugger")
-                        return "invalid.deprecated";
+                        return "keyword";
                     else
                         return "identifier";
                 },
-                // TODO: Unicode escape sequences
-                // TODO: Unicode identifiers
                 regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
             }, {
                 token : "paren.lparen",
-                regex : "[[({]"
+                regex : "[[]",
+                next  : "commandItem"
             }, {
+                token : "paren.lparen",
+                regex : "[({]"
+            },  {
                 token : "paren.rparen",
                 regex : "[\\])}]"
             }, {
@@ -209,6 +198,29 @@ var TclHighlightRules = function() {
                 regex : "\\s+"
             }
         ],
+        "commandItem" : [
+            {
+                token : "comment",
+                regex : "#.*$",
+                next  : "start"
+            }, {
+                token : "comment",
+                merge : true,
+                regex : "#.*\\\\$",
+                next  : "commentfollow"
+            }, {
+                token : "variable.instancce", // variable tcl
+                regex : "[$](?:[a-zA-Z_]|\d)+(?:[(](?:[a-zA-Z_]|\d)+[)])?",
+                next  : "start"
+            }, {
+                token : "variable.instancce", // variable tcl with braces
+                regex : "[$]{?(?:[a-zA-Z_]|\d)+}?",
+                next  : "start"
+            }, {
+                token : "keyword",
+                regex : "[a-zA-Z0-9]+",
+                next  : "start"
+            } ],
         "commentfollow" : [ 
             {
                 token : "comment",
@@ -230,19 +242,6 @@ var TclHighlightRules = function() {
             regex : '.+'
         } ]
     };
-      /*   {
-                token : "string", // symbol
-                regex : "[:](?:[A-Za-z_]|[@$](?=[a-zA-Z0-9_]))[a-zA-Z0-9_]*[!=?]?"
-           }, {
-                token : "constant.numeric", // hex
-                regex : "0[xX][0-9a-fA-F](?:[0-9a-fA-F]|_(?=[0-9a-fA-F]))*\\b"
-            }, {
-                token : "constant.numeric", // float
-                regex : "[+-]?\\d(?:\\d|_(?=\\d))*(?:(?:\\.\\d(?:\\d|_(?=\\d))*)?(?:[eE][+-]?\\d+)?)?\\b"
-            }, {
-                token : "constant.language.boolean",
-                regex : "(?:true|false)\\b"
-            }]*/
 };
 
 oop.inherits(TclHighlightRules, TextHighlightRules);
