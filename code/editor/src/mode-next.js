@@ -134,6 +134,8 @@ var TclHighlightRules = function() {
     // regexp must not have capturing parentheses. Use (?:) instead.
     // regexps are ordered -> the first match is used
 
+
+
     this.$rules = {
         "start" : [
            {
@@ -144,20 +146,23 @@ var TclHighlightRules = function() {
             }, {
                 token : "comment",
                 regex : "#.*$"
+            },{
+                token : "text",
+                regex : '[\\\\](?:["]|[{]|[}]|[[]|[]]|[$]|[\])'
             }, {
                 token : "text", // last value before command
-                regex : '[;]|[/\r/]',
+                regex : '[^{][;][^}]|[/\r/]',
                 next  : "commandItem"
             }, {
                 token : "string", // single line
-                regex : '[^\\\\]["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
+                regex : '[ ]*["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
                 token : "string", // single line
-                regex : '[^\\\\]["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
+                regex : '[ ]*["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
                 token : "string", // multi line """ string start
                 merge : true,
-                regex : '[^"\\\\]["]',
+                regex : '[ ]*["]',
                 next  : "qqstring"
             }, {
                 token : "variable.instancce", // variable tcl
@@ -166,8 +171,12 @@ var TclHighlightRules = function() {
                 token : "variable.instancce", // variable tcl with braces
                 regex : "[$]{?(?:[a-zA-Z_]|\d)+}?"
             }, {
+                token : "variable.instancce", // variable tcl with braces NX style
+                regex : "[$]{[:](?:[a-zA-Z_]|\d)+}",
+                next  : "start"
+            }, {
                 token : "support.function",
-                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}"
+                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}|;"
             }, {
                 token : function(value) {
                     if (builtinFunctions.hasOwnProperty(value))
@@ -178,11 +187,11 @@ var TclHighlightRules = function() {
                 regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
             }, {
                 token : "paren.lparen",
-                regex : "[[]",
+                regex : "[[{]",
                 next  : "commandItem"
             }, {
                 token : "paren.lparen",
-                regex : "[({]"
+                regex : "[(]"
             },  {
                 token : "paren.rparen",
                 regex : "[\\])}]"
@@ -208,6 +217,10 @@ var TclHighlightRules = function() {
             }, {
                 token : "variable.instancce", // variable tcl with braces
                 regex : "[$]{?(?:[a-zA-Z_]|\d)+}?",
+                next  : "start"
+            }, {
+                token : "variable.instancce", // variable tcl with braces NX style
+                regex : "[$]{[:](?:[a-zA-Z_]|\d)+}",
                 next  : "start"
             }, {
                 token : "keyword",
@@ -236,6 +249,8 @@ var TclHighlightRules = function() {
         } ]
     };
 };
+
+
 
 oop.inherits(TclHighlightRules, TextHighlightRules);
 
