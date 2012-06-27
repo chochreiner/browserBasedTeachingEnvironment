@@ -149,7 +149,7 @@ var TclHighlightRules = function() {
                 regex : '[\\\\](?:["]|[{]|[}]|[[]|[]]|[$]|[\])'
             }, {
                 token : "text", // last value before command
-                regex : '[^{][;][^}]|[/\r/]',
+                regex : '^|[^{][;][^}]|[/\r/]',
                 next  : "commandItem"
             }, {
                 token : "string", // single line
