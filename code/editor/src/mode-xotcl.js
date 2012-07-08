@@ -36,13 +36,34 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-define('ace/mode/xotcl', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/xotcl_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/range', ], function(require, exports, module) {
+define('ace/mode/xotcl', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/tcl', 'ace/tokenizer', 'ace/mode/xotcl_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/range'], function(require, exports, module) {
+
+
+var oop = require("../lib/oop");
+var TclMode = require("./tcl").Mode;
+var Tokenizer = require("../tokenizer").Tokenizer;
+var XoTclHighlightRules = require("./xotcl_highlight_rules").XoTclHighlightRules;
+var MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutdent;
+var Range = require("../range").Range;
+
+var Mode = function() {
+    this.$tokenizer = new Tokenizer(new XoTclHighlightRules().getRules());
+    this.$outdent = new MatchingBraceOutdent();
+};
+oop.inherits(Mode, TclMode);
+
+(function() { }).call(Mode.prototype);
+
+exports.Mode = Mode;
+});
+
+define('ace/mode/tcl', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/tcl_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/range'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
 var Tokenizer = require("../tokenizer").Tokenizer;
-var TclHighlightRules = require("./xotcl_highlight_rules").TclHighlightRules;
+var TclHighlightRules = require("./tcl_highlight_rules").TclHighlightRules;
 var MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutdent;
 var Range = require("../range").Range;
 
@@ -109,15 +130,13 @@ oop.inherits(Mode, TextMode);
     this.autoOutdent = function(state, doc, row) {
         this.$outdent.autoOutdent(doc, row);
     };
-    
-
 
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
 });
 
-define('ace/mode/xotcl_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/lib/lang', 'ace/mode/text_highlight_rules'], function(require, exports, module) {
+define('ace/mode/tcl_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/lib/lang', 'ace/mode/text_highlight_rules'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
@@ -126,10 +145,16 @@ var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
 var TclHighlightRules = function() {
 
-    var builtinFunctions = lang.arrayToMap(
-        ("tell|socket|subst|open|eof|pwd|glob|list|pid|exec|auto_load_index|time|unknown|eval|lassign|lrange|fblocked|lsearch|auto_import|gets|case|lappend|proc|break|variable|llength|auto_execok|return|linsert|error|catch|clock|info|split|array|if|fconfigure|concat|join|lreplace|source|fcopy|global|switch|auto_qualify|update|close|cd|for|auto_load|file|append|lreverse|format|unload|read|package|set|binary|namespace|scan|apply|trace|seek|while|chan|flush|after|vwait|dict|continue|uplevel|foreach|lset|rename|fileevent|regexp|lrepeat|upvar|encoding|expr|unset|load|regsub|interp|exit|puts|incr|lindex|lsort|tclLog|string|round|wide|sqrt|sin|log10|double|hypot|atan|bool|rand|abs|acos|atan2|entier|srand|sinh|log|floor|tanh|tan|isqrt|int|asin|min|ceil|cos|cosh|exp|max|pow|fmod|getExitHandler|setExitHandler|CopyHandler|__exitHandler|unsetExitHandler|uses|method|allinstances|parameter|new|instmixin|alloc|instparametercmd|instforward|create|info|slots|superclass|instinvar|instmixinguard|parameterclass|instfilterguard|instdestroy|unknown|instproc|autoname|recreate|instfilter|subst|isclass|configure|check|eval|requireNamespace|isobject|proc|lappend|instvar|move|exists|volatile|__next|istype|array|cleanup|filterguard|filtersearch|filter|contains|append|noinit|self|hasclass|set|parametercmd|mixin|defaultmethod|trace|ismixin|ismetaclass|procsearch|destroy|vwait|uplevel|extractConfigureArg|copy|init|forward|upvar|unset|mixinguard|invar|incr|abstract|class|Parameter|__unknown|uses|method|allinstances|parameter|new|instmixin|alloc|instparametercmd|instforward|create|info|slots|superclass|instinvar|instmixinguard|parameterclass|instfilterguard|instdestroy|unknown|instproc|autoname|recreate|instfilter|subst|isclass|configure|check|eval|requireNamespace|isobject|proc|lappend|instvar|move|exists|volatile|__next|istype|array|cleanup|filterguard|filtersearch|filter|contains|append|noinit|self|hasclass|set|parametercmd|mixin|defaultmethod|trace|ismixin|ismetaclass|procsearch|destroy|vwait|uplevel|extractConfigureArg|copy|init|forward|upvar|unset|mixinguard|invar|incr|abstract|class").split("|")
-    );
-    
+     this.keywordList = function(keyword) {
+ 	   var builtinFunctions = lang.arrayToMap(("").split("|")); 
+
+       if (builtinFunctions.hasOwnProperty(value)) {
+         return "keyword";
+       } else {
+         return "identifier";
+      }
+     }
+ 
 
     // regexp must not have capturing parentheses. Use (?:) instead.
     // regexps are ordered -> the first match is used
@@ -149,11 +174,8 @@ var TclHighlightRules = function() {
                 regex : '[\\\\](?:["]|[{]|[}]|[[]|[]]|[$]|[\])'
             }, {
                 token : "text", // last value before command
-                regex : '[^{][;][^}]|[/\r/]',
+                regex : '^|[^{][;][^}]|[/\r/]',
                 next  : "commandItem"
-            }, {
-                token : "string", // single line
-                regex : '[ ]*["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
                 token : "string", // single line
                 regex : '[ ]*["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
@@ -173,10 +195,7 @@ var TclHighlightRules = function() {
                 regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}|;"
             }, {
                 token : function(value) {
-                    if (builtinFunctions.hasOwnProperty(value))
-                        return "keyword";
-                    else
-                        return "identifier";
+                    this.keywordList(value);
                 },
                 regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
             }, {
@@ -204,6 +223,9 @@ var TclHighlightRules = function() {
                 merge : true,
                 regex : "#.*\\\\$",
                 next  : "commentfollow"
+            }, {
+                token : "string", // single line
+                regex : '[ ]*["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
                 token : "variable.instancce", // variable tcl
                 regex : "[$](?:[a-zA-Z_]|\d)+(?:[(](?:[a-zA-Z_]|\d)+[)])?",
@@ -288,4 +310,37 @@ var MatchingBraceOutdent = function() {};
 }).call(MatchingBraceOutdent.prototype);
 
 exports.MatchingBraceOutdent = MatchingBraceOutdent;
+});
+
+define('ace/mode/xotcl_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/lib/lang', 'ace/mode/tcl_highlight_rules'], function(require, exports, module) {
+
+
+var oop = require("../lib/oop");
+var lang = require("../lib/lang");
+var TclHighlightRules = require("./tcl_highlight_rules").TclHighlightRules;
+
+var XoTclHighlightRules = function() {
+
+     this.keywordList = function(keyword) {
+ 	   var builtinFunctions = lang.arrayToMap(("instproc|instvar").split("|")); 
+
+       if (builtinFunctions.hasOwnProperty(value)) {
+         return true;
+       } else {
+         return false;
+      }
+     }
+
+
+    // regexp must not have capturing parentheses. Use (?:) instead.
+    // regexps are ordered -> the first match is used
+
+	
+	this.$rules = new TclHighlightRules().getRules();
+
+};
+
+oop.inherits(XoTclHighlightRules, TclHighlightRules);
+
+exports.XoTclHighlightRules = XoTclHighlightRules;
 });

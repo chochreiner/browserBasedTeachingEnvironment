@@ -36,7 +36,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-define('ace/mode/tcl', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/tcl_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/range', ], function(require, exports, module) {
+define('ace/mode/tcl', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/tcl_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/range'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
@@ -109,8 +109,6 @@ oop.inherits(Mode, TextMode);
     this.autoOutdent = function(state, doc, row) {
         this.$outdent.autoOutdent(doc, row);
     };
-    
-
 
 }).call(Mode.prototype);
 
@@ -127,9 +125,9 @@ var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 var TclHighlightRules = function() {
 
     var builtinFunctions = lang.arrayToMap(
-        ("tell|socket|subst|open|eof|pwd|glob|list|pid|exec|auto_load_index|time|unknown|eval|lassign|lrange|fblocked|lsearch|auto_import|gets|case|lappend|proc|break|variable|llength|auto_execok|return|linsert|error|catch|clock|info|split|array|if|fconfigure|concat|join|lreplace|source|fcopy|global|switch|auto_qualify|update|close|cd|for|auto_load|file|append|lreverse|format|unload|read|package|set|binary|namespace|scan|apply|trace|seek|while|chan|flush|after|vwait|dict|continue|uplevel|foreach|lset|rename|fileevent|regexp|lrepeat|upvar|encoding|expr|unset|load|regsub|interp|exit|puts|incr|lindex|lsort|tclLog|string|round|wide|sqrt|sin|log10|double|hypot|atan|bool|rand|abs|acos|atan2|entier|srand|sinh|log|floor|tanh|tan|isqrt|int|asin|min|ceil|cos|cosh|exp|max|pow|fmod").split("|")
-    );
-    
+        ("").split("|")
+        
+    ); 
 
     // regexp must not have capturing parentheses. Use (?:) instead.
     // regexps are ordered -> the first match is used
@@ -144,7 +142,11 @@ var TclHighlightRules = function() {
             }, {
                 token : "comment",
                 regex : "#.*$"
-            },{
+            }, {
+                token : "support.function",
+                regex : '[\\\\]$',
+                next  : "splitlineStart"
+            }, {
                 token : "text",
                 regex : '[\\\\](?:["]|[{]|[}]|[[]|[]]|[$]|[\])'
             }, {
@@ -155,22 +157,18 @@ var TclHighlightRules = function() {
                 token : "string", // single line
                 regex : '[ ]*["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
-                token : "string", // single line
-                regex : '[ ]*["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
-            }, {
                 token : "string", // multi line """ string start
                 merge : true,
                 regex : '[ ]*["]',
                 next  : "qqstring"
             }, {
-                token : "variable.instancce", // variable tcl
-                regex : "[$](?:[a-zA-Z_]|\d)+(?:[(](?:[a-zA-Z_]|\d)+[)])?"
-            }, {
                 token : "variable.instancce", // variable tcl with braces
-                regex : "[$]{?(?:[a-zA-Z_]|\d)+}?"
+                merge : true,
+                regex : "[$]",
+                next  : "variable"
             }, {
                 token : "support.function",
-                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}|;"
+                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}|;|::"
             }, {
                 token : function(value) {
                     if (builtinFunctions.hasOwnProperty(value))
@@ -197,24 +195,39 @@ var TclHighlightRules = function() {
         "commandItem" : [
             {
                 token : "comment",
-                regex : "#.*$",
-                next  : "start"
-            }, {
-                token : "comment",
                 merge : true,
                 regex : "#.*\\\\$",
                 next  : "commentfollow"
             }, {
-                token : "variable.instancce", // variable tcl
-                regex : "[$](?:[a-zA-Z_]|\d)+(?:[(](?:[a-zA-Z_]|\d)+[)])?",
+                token : "comment",
+                regex : "#.*$",
                 next  : "start"
+            }, {
+                token : "string", // single line
+                regex : '[ ]*["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
                 token : "variable.instancce", // variable tcl with braces
-                regex : "[$]{?(?:[a-zA-Z_]|\d)+}?",
-                next  : "start"
+                merge : true,
+                regex : "[$]",
+                next  : "variable"
+            }, {
+                token : "support.function",
+                regex : "(?:[:][:])[a-zA-Z0-9_/]+(?:[:][:])",
+                next  : "commandItem"
+            }, {
+                token : "support.function",
+                regex : "[a-zA-Z0-9_/]+(?:[:][:])",
+                next  : "commandItem"
+            }, {
+                token : "support.function",
+                regex : "(?:[:][:])",
+                next  : "commandItem"
+            }, {
+                token : "support.function",
+                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}|;|::"
             }, {
                 token : "keyword",
-                regex : "[a-zA-Z0-9]+",
+                regex : "[a-zA-Z0-9_/]+",
                 next  : "start"
             } ],
         "commentfollow" : [ 
@@ -223,11 +236,35 @@ var TclHighlightRules = function() {
                 regex : ".*\\\\$",
                 next  : "commentfollow"
             }, {
-              token : "comment",
-              merge : true,
-              regex : '.+',
-              next  : "start"
-        } ],  
+                token : "comment",
+                merge : true,
+                regex : '.+',
+                next  : "start"
+        } ],
+        "splitlineStart" : [ 
+            {
+                token : "text",
+                regex : "^.",
+                next  : "start"
+            }],
+        "variable" : [ 
+            {
+                token : "variable.instancce", // variable tcl with braces
+                regex : "(?:[:][:])?(?:[a-zA-Z_]|\d)+(?:(?:[:][:])?(?:[a-zA-Z_]|\d)+)?(?:[(](?:[a-zA-Z_]|\d)+[)])?",
+                next : "start"
+            }, {
+                token : "variable.instancce", // variable tcl
+                regex : "(?:[a-zA-Z_]|\d)+(?:[(](?:[a-zA-Z_]|\d)+[)])?",
+                next  : "start"
+            }, {
+                token : "variable.instancce", // variable tcl with braces
+                regex : "{?(?:[a-zA-Z_]|\d)+}?",
+                next  : "start"
+            }, {
+                token : "variable.instancce", // variable Xotcl with braces
+                regex : "[{][:](?:[a-zA-Z_]|\d)+}",
+                next : "start"
+            } ],  
         "qqstring" : [ {
             token : "string", // multi line """ string end
             regex : '(?:[^\\\\]|\\\\.)*?["]',

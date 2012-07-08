@@ -19,7 +19,7 @@
         <select id="languageselector" onchange="changeLanguage()">
           <option value="tcl">Tcl</option>
           <option value="xotcl">XoTcl</option>
-          <option value="nx">NX</option>
+          <option value="text">NX</option>
         </select>
       </div>
       <div id="sample">
@@ -27,7 +27,7 @@
         <select id="scriptselector" onchange="changeScript()">
           <option value="none">none</option>
           <option value="dijkstra">Dijkstra</option>
-          <option value="sample">Sample</option>
+          <option value="checklist">Sample</option>
           <option value="intro">intro</option>
           <option value="xotcl">XoTcl</option>
         </select>
@@ -51,7 +51,7 @@
   
 <script type="text/editor" id="none"></script>
 
-<textarea class="sample" id="sample">
+<textarea class="sample" id="checklist">
 #String
 set y "xxxx" 
 set y "xxxx "cssdsdsdsd" yyyy"
@@ -60,16 +60,29 @@ set x "xxxxxx
       sdsdasdasd
    ssadsadasd"
 
+set y  "xxxx
+       swfsfsdfsd
+       "
+
 #variables
-$name
+set $name
 
-$name(key)
+set $name(key)
 
-${name} 
+set ${name} 
 
-${subst}$itut(ions)
+set ${subst}$itut(ions)
 
-${:name}
+set ${:name}
+
+set $::x
+set $::x::a
+set $x::a
+
+::tcl::set
+nx::Object
+::xotcl::Class
+
 
 #command substitution
 
@@ -86,12 +99,45 @@ kein comment
 set x 1; # my comment \
          dsdsdsdds
 
+
+set x \
+   1
+
+set y \
+   "1"   
+   
+   
+set x \1   
+
 {*}
 ;
          
-alle "strings" gehen mit " an und dann geht es weiter; entweder mit string oder eval oder variable" --> braucht aber einen eigenen next --> innerhalb der stringumgebung und extern
+set x "\[set x 1 \]"
 
-frage --> kann man mit einem 2. run drübergehen         
+proc foo {p1} {;}
+
+Object create foo;
+Class create foo;
+
+set x {x y z};
+
+set x [list x y z]
+
+set x {set set set}
+
+set x {incr y; incr y}
+eval $x
+
+set x {x y z; x y z}
+
+set x 1; set y 2
+set z 3
+
+proc foo {p1} {;}
+
+proc foo {p1} {;} != proc foo {p1} {}; == proc foo {p1} {;};
+
+proc foo {x y z} {;}
 
 
 </textarea>
