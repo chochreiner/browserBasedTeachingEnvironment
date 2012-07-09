@@ -19,7 +19,7 @@ function submitToServer() {
       var result = xmlhttp.responseText;
       document.getElementById("result").style.visibility="visible";
       document.getElementById("result").innerHTML=result;
-      var line = result.match(/on line: (.*)\$/);
+      var line = result.match(/on line: (.*)/);
       editor.gotoLine(line[1]);
     }
   }

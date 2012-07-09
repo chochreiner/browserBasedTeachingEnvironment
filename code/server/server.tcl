@@ -152,7 +152,7 @@ Httpd::PortfolioWrk instproc response {} {;# Respond to the GET-query
     set result "Errormessage: $msg \n\n"
     append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
     append result "on line: [dict get $x -errorline] \n\n"
-    append result "xxxxxxxxxxxx"
+    append result "xxxxxxxxxxx"
   }
 puts $result
   my sendDynamicString $result
