@@ -145,16 +145,10 @@ var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
 var TclHighlightRules = function() {
 
-     this.keywordList = function(keyword) {
- 	   var builtinFunctions = lang.arrayToMap(("").split("|")); 
-
-       if (builtinFunctions.hasOwnProperty(value)) {
-         return "keyword";
-       } else {
-         return "identifier";
-      }
-     }
- 
+    var builtinFunctions = lang.arrayToMap(
+        ("").split("|")
+        
+    ); 
 
     // regexp must not have capturing parentheses. Use (?:) instead.
     // regexps are ordered -> the first match is used
@@ -195,7 +189,10 @@ var TclHighlightRules = function() {
                 regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}|;"
             }, {
                 token : function(value) {
-                    this.keywordList(value);
+                    if (builtinFunctions.hasOwnProperty(value))
+                        return "keyword";
+                    else
+                        return "identifier";
                 },
                 regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
             }, {
@@ -312,35 +309,166 @@ var MatchingBraceOutdent = function() {};
 exports.MatchingBraceOutdent = MatchingBraceOutdent;
 });
 
-define('ace/mode/xotcl_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/lib/lang', 'ace/mode/tcl_highlight_rules'], function(require, exports, module) {
+define('ace/mode/xotcl_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/lib/lang', 'ace/mode/text_highlight_rules'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
 var lang = require("../lib/lang");
-var TclHighlightRules = require("./tcl_highlight_rules").TclHighlightRules;
+var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
 var XoTclHighlightRules = function() {
 
-     this.keywordList = function(keyword) {
- 	   var builtinFunctions = lang.arrayToMap(("instproc|instvar").split("|")); 
-
-       if (builtinFunctions.hasOwnProperty(value)) {
-         return true;
-       } else {
-         return false;
-      }
-     }
-
+    var builtinFunctions = lang.arrayToMap(("create|instproc|instvar").split("|")); 
 
     // regexp must not have capturing parentheses. Use (?:) instead.
     // regexps are ordered -> the first match is used
 
-	
-	this.$rules = new TclHighlightRules().getRules();
-
+    this.$rules = {
+        "start" : [
+           {
+                token : "comment",
+                merge : true,
+                regex : "#.*\\\\$",
+                next  : "commentfollow"
+            }, {
+                token : "comment",
+                regex : "#.*$"
+            }, {
+                token : "support.function",
+                regex : '[\\\\]$',
+                next  : "splitlineStart"
+            }, {
+                token : "text",
+                regex : '[\\\\](?:["]|[{]|[}]|[[]|[]]|[$]|[\])'
+            }, {
+                token : "text", // last value before command
+                regex : '^|[^{][;][^}]|[/\r/]',
+                next  : "commandItem"
+            }, {
+                token : "string", // single line
+                regex : '[ ]*["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
+            }, {
+                token : "string", // multi line """ string start
+                merge : true,
+                regex : '[ ]*["]',
+                next  : "qqstring"
+            }, {
+                token : "variable.instancce", // variable xotcl with braces
+                merge : true,
+                regex : "[$]",
+                next  : "variable"
+            }, {
+                token : "support.function",
+                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}|;|::"
+            }, {
+                token : function(value) {
+                    if (builtinFunctions.hasOwnProperty(value))
+                        return "keyword";
+                    else
+                        return "identifier";
+                },
+                regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+            }, {
+                token : "paren.lparen",
+                regex : "[[{]",
+                next  : "commandItem"
+            }, {
+                token : "paren.lparen",
+                regex : "[(]"
+            },  {
+                token : "paren.rparen",
+                regex : "[\\])}]"
+            }, {
+                token : "text",
+                regex : "\\s+"
+            }
+        ],
+        "commandItem" : [
+            {
+                token : "comment",
+                merge : true,
+                regex : "#.*\\\\$",
+                next  : "commentfollow"
+            }, {
+                token : "comment",
+                regex : "#.*$",
+                next  : "start"
+            }, {
+                token : "string", // single line
+                regex : '[ ]*["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
+            }, {
+                token : "variable.instancce", // variable xotcl with braces
+                merge : true,
+                regex : "[$]",
+                next  : "variable"
+            }, {
+                token : "support.function",
+                regex : "(?:[:][:])[a-zA-Z0-9_/]+(?:[:][:])",
+                next  : "commandItem"
+            }, {
+                token : "support.function",
+                regex : "[a-zA-Z0-9_/]+(?:[:][:])",
+                next  : "commandItem"
+            }, {
+                token : "support.function",
+                regex : "(?:[:][:])",
+                next  : "commandItem"
+            }, {
+                token : "support.function",
+                regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}|;|::"
+            }, {
+                token : "keyword",
+                regex : "[a-zA-Z0-9_/]+",
+                next  : "start"
+            } ],
+        "commentfollow" : [ 
+            {
+                token : "comment",
+                regex : ".*\\\\$",
+                next  : "commentfollow"
+            }, {
+                token : "comment",
+                merge : true,
+                regex : '.+',
+                next  : "start"
+        } ],
+        "splitlineStart" : [ 
+            {
+                token : "text",
+                regex : "^.",
+                next  : "start"
+            }],
+        "variable" : [ 
+            {
+                token : "variable.instancce", // variable xotcl with braces
+                regex : "(?:[:][:])?(?:[a-zA-Z_]|\d)+(?:(?:[:][:])?(?:[a-zA-Z_]|\d)+)?(?:[(](?:[a-zA-Z_]|\d)+[)])?",
+                next : "start"
+            }, {
+                token : "variable.instancce", // variable tcl
+                regex : "(?:[a-zA-Z_]|\d)+(?:[(](?:[a-zA-Z_]|\d)+[)])?",
+                next  : "start"
+            }, {
+                token : "variable.instancce", // variable tcl with braces
+                regex : "{?(?:[a-zA-Z_]|\d)+}?",
+                next  : "start"
+            }, {
+                token : "variable.instancce", // variable xotcl with braces
+                regex : "[{][:](?:[a-zA-Z_]|\d)+}",
+                next : "start"
+            }],  
+        "qqstring" : [ {
+            token : "string", // multi line """ string end
+            regex : '(?:[^\\\\]|\\\\.)*?["]',
+            next : "start"
+        }, {
+            token : "string",
+            merge : true,
+            regex : '.+'
+        } ]
+    };
 };
 
-oop.inherits(XoTclHighlightRules, TclHighlightRules);
+oop.inherits(XoTclHighlightRules, TextHighlightRules);
 
 exports.XoTclHighlightRules = XoTclHighlightRules;
 });

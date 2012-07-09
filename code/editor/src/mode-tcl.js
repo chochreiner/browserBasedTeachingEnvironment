@@ -162,7 +162,7 @@ var TclHighlightRules = function() {
                 regex : '[ ]*["]',
                 next  : "qqstring"
             }, {
-                token : "variable.instancce", // variable tcl with braces
+                token : "variable.instancce", // variable xotcl with braces
                 merge : true,
                 regex : "[$]",
                 next  : "variable"
@@ -206,7 +206,7 @@ var TclHighlightRules = function() {
                 token : "string", // single line
                 regex : '[ ]*["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
-                token : "variable.instancce", // variable tcl with braces
+                token : "variable.instancce", // variable xotcl with braces
                 merge : true,
                 regex : "[$]",
                 next  : "variable"
@@ -249,7 +249,7 @@ var TclHighlightRules = function() {
             }],
         "variable" : [ 
             {
-                token : "variable.instancce", // variable tcl with braces
+                token : "variable.instancce", // variable xotcl with braces
                 regex : "(?:[:][:])?(?:[a-zA-Z_]|\d)+(?:(?:[:][:])?(?:[a-zA-Z_]|\d)+)?(?:[(](?:[a-zA-Z_]|\d)+[)])?",
                 next : "start"
             }, {
@@ -260,11 +260,7 @@ var TclHighlightRules = function() {
                 token : "variable.instancce", // variable tcl with braces
                 regex : "{?(?:[a-zA-Z_]|\d)+}?",
                 next  : "start"
-            }, {
-                token : "variable.instancce", // variable Xotcl with braces
-                regex : "[{][:](?:[a-zA-Z_]|\d)+}",
-                next : "start"
-            } ],  
+            }],  
         "qqstring" : [ {
             token : "string", // multi line """ string end
             regex : '(?:[^\\\\]|\\\\.)*?["]',
@@ -276,7 +272,6 @@ var TclHighlightRules = function() {
         } ]
     };
 };
-
 oop.inherits(TclHighlightRules, TextHighlightRules);
 
 exports.TclHighlightRules = TclHighlightRules;
