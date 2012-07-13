@@ -318,7 +318,7 @@ var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
 var NextHighlightRules = function() {
 
-    var builtinFunctions = lang.arrayToMap(("create|instproc|instvar").split("|")); 
+    var builtinFunctions = lang.arrayToMap(("method|new|alias|delete|create|info|property|forward|mixin|variable|class|filter|volatile|method|alias|configure|copy|delete|info|property|mixin|forward|public|eval|destroy|protected|private|require|variable|filter|move|contains").split("|")); 
 
     // regexp must not have capturing parentheses. Use (?:) instead.
     // regexps are ordered -> the first match is used
