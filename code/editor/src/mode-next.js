@@ -417,8 +417,12 @@ var NextHighlightRules = function() {
                 token : "support.function",
                 regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}|;|::"
             }, {
+                token : ["keyword", "method"],
+                regex : "(?:[:])[a-zA-Z0-9_/]+",
+                next  : "start"
+            }, {
                 token : "keyword",
-                regex : "(?:[:])?[a-zA-Z0-9_/]+",
+                regex : "[a-zA-Z0-9_/]+",
                 next  : "start"
             } ],
         "commentfollow" : [ 
