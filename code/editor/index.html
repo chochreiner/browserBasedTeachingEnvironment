@@ -31,7 +31,7 @@
           <option value="checklist">Sample</option>
           <option value="intro">intro</option>
           <option value="xotcl">XoTcl</option>
-          <option value="tclvsxotcl">Tcl vs XoTcl</option>
+          <option value="tclvsxotcl">Tcl vs XoTcl vs NX</option>
         </select>
       </div>         
     </div>
@@ -60,6 +60,14 @@ set ${:name}
 test instproc testproc {} {
   my instvar testvar
 }
+
+Object create o {
+  :public method foo {} {
+     :bar; # ...
+     set y [:baz]
+  }
+}
+
 </textarea>
 
 <textarea class="sample" id="checklist">
