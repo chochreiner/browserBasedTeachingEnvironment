@@ -363,7 +363,7 @@ var NextHighlightRules = function() {
             }, {
                 token : function(value) {
                     if (builtinFunctions.hasOwnProperty(value))
-                        return "keyword";
+                        return ["keyword", "method"];
                     else
                         return "identifier";
                 },
