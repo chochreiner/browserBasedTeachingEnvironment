@@ -318,7 +318,7 @@ var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
 var XoTclHighlightRules = function() {
 
-    var builtinFunctions=lang.arrayToMap(("Parameter|uses|method|allinstances|parameter|new|instmixin|alloc|instparametercmd|instforward|create|info|slots|superclass|instinvar|instmixinguard|parameterclass|instfilterguard|instdestroy|unknown|instproc|autoname|recreate|instfilter|subst|isclass|configure|check|eval|requireNamespace|isobject|proc|lappend|instvar|move|exists|volatile|istype|array|cleanup|filterguard|filtersearch|filter|contains|append|noinit|self|hasclass|set|parametercmd|mixin|defaultmethod|trace|ismixin|ismetaclass|procsearch|destroy|vwait|uplevel|extractConfigureArg|copy|init|forward|upvar|unset|mixinguard|invar|incr|abstract|classgetExitHandler|setExitHandler|CopyHandler|unsetExitHandler|uses|method|allinstances|parameter|new|instmixin|alloc|instparametercmd|instforward|create|info|slots|superclass|instinvar|instmixinguard|parameterclass|instfilterguard|instdestroy|unknown|instproc|autoname|recreate|instfilter|subst|isclass|configure|check|eval|requireNamespace|isobject|proc|lappend|instvar|move|exists|volatile|istype|array|cleanup|filterguard|filtersearch|filter|contains|append|noinit|self|hasclass|set|parametercmd|mixin|defaultmethod|trace|ismixin|ismetaclass|procsearch|destroy|vwait|uplevel|extractConfigureArg|copy|init|forward|upvar|unset|mixinguard|invar|incr|abstract|class").split("|"));
+    var builtinFunctions;
 
     // regexp must not have capturing parentheses. Use (?:) instead.
     // regexps are ordered -> the first match is used

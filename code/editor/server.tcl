@@ -6,7 +6,7 @@ package provide TinyWebServer 0.4
 package require XOTcl
 namespace import -force ::xotcl::*
 
-array set opt {-port 8081 -root ./html}
+array set opt {-port 8081 -root ./}
 array set opt $argv
 
 
@@ -101,6 +101,8 @@ Httpd::Wrk instproc body {} {;# Read the request body
 Httpd::Wrk instproc response-GET {} {;# Respond to the GET-query
   puts stderr "[self] [self proc]"
   my instvar fileName
+  my modifyXOTclSyntax
+  my modifyNextSyntax
   if {[file readable $fileName]} {
     my replyCode 200
     switch [file extension $fileName] { 
@@ -114,10 +116,8 @@ Httpd::Wrk instproc response-GET {} {;# Respond to the GET-query
 }
 Httpd::Wrk instproc response-POST {} {;# POST method
   my instvar path asdfghjkl requestBody
-#  regsub {\/} $path "" path
 
   set script $requestBody
-#  set script [::base64::decode $script]
   concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"
   set i [interp create -safe]
   my replyCode 200
@@ -137,6 +137,30 @@ Httpd::Wrk instproc handlereturn {i args} {
   my instvar asdfghjkl
     append asdfghjkl {*}$args
     append asdfghjkl "\n"
+}
+
+Httpd::Wrk instproc modifyNextSyntax { } {
+  set oldFile [my readFile "src/mode-next-pre.js"]
+  set keywords [nx::Class info methods]
+  append keywords [nx::Object info methods]
+
+  regsub -all " " $keywords "|" keywordsnew
+  set keywordsnew [concat "builtinFunctions = lang.arrayToMap((\"" $keywordsnew "\").split(\"|\"));"]
+  regsub -all " " $keywordsnew "" keywordsnew
+  regsub "builtinFunctions;" $oldFile $keywordsnew  newFile
+  my writeFile "src/mode-next.js" $newFile
+}
+
+Httpd::Wrk instproc modifyXOTclSyntax { } {
+  set oldFile [my readFile "src/mode-xotcl-pre.js"]
+  set keywords [lsearch -glob -not -all -inline [::xotcl::Class info methods] {__*}]
+  append keywords [lsearch -glob -not -all -inline [::xotcl::Object info methods] {__*}]
+
+  regsub -all " " $keywords "|" keywordsnew
+  set keywordsnew [concat "builtinFunctions = lang.arrayToMap((\"" $keywordsnew "\").split(\"|\"));"]
+  regsub -all " " $keywordsnew "" keywordsnew
+  regsub "builtinFunctions;" $oldFile $keywordsnew  newFile
+  my writeFile "src/mode-xotcl.js" $newFile
 }
 
 
@@ -171,6 +195,14 @@ Httpd::Wrk instproc readFile fn {
   close $f
   return $content
 }
+
+Httpd::Wrk instproc writeFile {fn content} {
+  set f [open $fn "w"]
+  fconfigure $f -translation binary
+  puts -nonewline $f $content
+  close $f
+}
+
 Httpd::Wrk instproc guessContentType fn {# derive content type from ext.
   switch [file extension $fn] {
     .gif {return image/gif}   .jpg  {return image/jpeg}
