@@ -23,6 +23,7 @@ function submitToServer() {
       editor.gotoLine(line[1]);
     }
   }
-  xmlhttp.open("GET","http:/localhost:8081/"+window.btoa(editor.getValue()),true);
-  xmlhttp.send();
+  xmlhttp.open("POST","http:/localhost:8081/",true);
+xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp.send(editor.getValue());
 }
