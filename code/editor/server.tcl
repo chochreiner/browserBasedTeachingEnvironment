@@ -1,58 +1,45 @@
-#Hochreiner Christoph, 0726292
-
-package provide TinyWebServer 0.4
-
-
 package require XOTcl
 namespace import -force ::xotcl::*
+
+#package require nx
+#namespace import -force ::nx::*
 
 array set opt {-port 8081 -root ./}
 array set opt $argv
 
-
-#####
-##### Definition of the Server Class 
-#####
 Class Httpd -parameter { 
   {port 80} 
   {root /home/httpd/html/} 
   {worker Httpd::Wrk} 
 }
-Httpd instproc init args {			;# constructor
+Httpd instproc init args {			
   my instvar port listen
   my set count 0
   puts stderr "Starting Server; url= http://[info hostname]:$port/"
   set listen [socket -server [list [self] accept] $port]
 }
-Httpd instproc destroy {} {			;# destructor
-  close [my set listen]				;# close listening port
+Httpd instproc destroy {} {			
+  close [my set listen]				
   next
 }
-Httpd instproc accept {socket ipaddr port} {	;# est. new connection
+Httpd instproc accept {socket ipaddr port} {
   [my worker] [self]::w[my incr count] \
 	-socket $socket -ipaddr $ipaddr -port $port
 }
 
-#####
-##### Definition of the Worker Class 
-#####
 Class Httpd::Wrk -parameter {socket port ipaddr}
-Httpd::Wrk array set codes {		;# we treat these status codes
-  200 "Data follows" 
-  400 "Bad Request"  404 "Not Found" 409 "Conflict"
-  501 "Not Implemented"
-}
+Httpd::Wrk array set codes { 200 "Data follows" 404 "Not Found" }
 Httpd::Wrk instproc Date secs {clock format $secs -format {%a, %d %b %Y %T %Z}}
-Httpd::Wrk instproc close {} {		;# close a request
+Httpd::Wrk instproc close {} {		
   puts stderr "[self] [self proc] [my socket] "
   close [my socket]
   my destroy
 }
-Httpd::Wrk instproc sendLine {msg} {	;# send a line
+Httpd::Wrk instproc sendLine {msg} {	
   puts stderr "[self] send: [my socket] <$msg>"
   puts [my socket] $msg
 }
-Httpd::Wrk instproc receiveLine {line n} {;# receive a line
+Httpd::Wrk instproc receiveLine {line n} {
   upvar $line received $n nrBytes
   set nrBytes [gets [my socket] received]
   puts stderr "[self] got:  <$received>"
@@ -61,24 +48,25 @@ Httpd::Wrk instproc fileevent {type method} {
   fileevent [my socket] $type [list [self] $method]
 }
 
-Httpd::Wrk instproc init args {		;# Constructor 
+Httpd::Wrk instproc init args {	
   my fileevent readable firstLine
   fconfigure [my socket] -blocking false
 }
-Httpd::Wrk instproc firstLine {} {	;# Read the first line of request
+
+Httpd::Wrk instproc firstLine {} {	
   my instvar method path fileName 
   my receiveLine line n
   if {[regexp {^(GET|POST) +([^ ]+) +HTTP/.*$} $line _ method path]} {
-    set fileName [[my info parent] root]/$path   ;# construct filename
+    set fileName [[my info parent] root]/$path  
     regsub {/$} $fileName /index.html fileName
     my fileevent readable header
   } else {
     my replyCode 400
   }
 }
-Httpd::Wrk instproc header {} {	;# Read the header
+Httpd::Wrk instproc header {} {	
   my receiveLine line n
-  if {$n > 0} { 		;# process header lines
+  if {$n > 0} { 	
     if {[regexp {^([^:]+): *(.+)$} $line _ key value]} {
       my set meta([string tolower $key]) $value
     }
@@ -91,7 +79,7 @@ Httpd::Wrk instproc header {} {	;# Read the header
     }
   }
 }
-Httpd::Wrk instproc body {} {;# Read the request body
+Httpd::Wrk instproc body {} {
   my instvar meta requestBody socket
   append requestBody [read $socket]
   if {$meta(content-length) <= [string length $requestBody]} {
@@ -100,9 +88,18 @@ Httpd::Wrk instproc body {} {;# Read the request body
 }
 Httpd::Wrk instproc response-GET {} {;# Respond to the GET-query
   puts stderr "[self] [self proc]"
-  my instvar fileName
+  my instvar fileName path
   my modifyXOTclSyntax
 #  my modifyNextSyntax
+  my insertAvailableScripts
+  
+  #special handling for scripts
+  if { [regexp -nocase {script/} $path] } {
+	#simple security measurement to restrict upward browsing
+    regsub {[.][.][/]} $path "" path
+    regsub "/" $path "" fileName
+  }
+
   if {[file readable $fileName]} {
     my replyCode 200
     switch [file extension $fileName] { 
@@ -116,19 +113,16 @@ Httpd::Wrk instproc response-GET {} {;# Respond to the GET-query
 }
 Httpd::Wrk instproc response-POST {} {;# POST method
   my instvar path asdfghjkl requestBody
-
   set script $requestBody
   concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"
   set i [interp create -safe]
   my replyCode 200
-  interp alias $i puts {} my handlereturn $i
-  
+  interp alias $i puts {} my handlereturn $i  
   if {[catch {set result [interp eval $i $script]} msg x]} {
     set result "Errormessage: $msg \n\n"
     append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
     append result "on line: [dict get $x -errorline] \n\n"
   }
-puts $result
   my sendDynamicString $result
   my close
 }
@@ -161,6 +155,24 @@ Httpd::Wrk instproc replaceKeywords {oldFile keywords} {
   return $newFile
 }
 
+Httpd::Wrk instproc insertAvailableScripts { } {
+  set oldFile [my readFile "index-pre.html"]
+  set contents [glob -directory "script/" *]
+  set scripts ""
+  foreach item $contents {
+        regsub "script/" $item ""  item
+        if {$item eq "none"} {
+          append scripts [concat "<option selected=\"selected\" value=\"" $item "\">" $item "</option>"]
+        } else {
+          append scripts [concat "<option value=\"" $item "\">" $item "</option>"]
+        }
+  }
+  regsub -all "\" " $scripts "\""  scripts
+  regsub -all " \"" $scripts "\""  scripts
+  regsub "MISSINGSCRIPTS" $oldFile $scripts  newFile
+
+  my writeFile "index.html" $newFile
+}
 
 Httpd::Wrk instproc sendFile {} {
   my instvar fileName socket
@@ -202,10 +214,8 @@ Httpd::Wrk instproc writeFile {fn content} {
 
 Httpd::Wrk instproc guessContentType fn {# derive content type from ext.
   switch [file extension $fn] {
-    .gif {return image/gif}   .jpg  {return image/jpeg}
     .htm {return text/html}   .html {return text/html} 
-    .css {return text/css}    .ps   {return application/postscript}
-    default {return text/plain}
+    .css {return text/css}    default {return text/plain}
   }
 }
 Httpd::Wrk instproc replyCode {code} {

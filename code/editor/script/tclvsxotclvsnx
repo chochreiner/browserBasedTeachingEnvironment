@@ -1,0 +1,12 @@
+set ${:name}
+
+test instproc testproc {} {
+  my instvar testvar
+}
+
+Object create o {
+  :public method foo {} {
+     :bar; # ...
+     set y [:baz]
+  }
+}

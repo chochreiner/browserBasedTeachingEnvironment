@@ -1,0 +1,88 @@
+#String
+set y "xxxx" 
+set y "xxxx "cssdsdsdsd" yyyy"
+
+set x "xxxxxx
+      sdsdasdasd
+   ssadsadasd"
+
+set y  "xxxx
+       swfsfsdfsd
+       "
+
+#variables
+set $name
+
+set $name(key)
+
+set ${name} 
+
+set ${subst}$itut(ions)
+
+set ${:name}
+
+set $::x
+set $::x::a
+set $x::a
+
+::tcl::set
+nx::Object
+::xotcl::Class
+
+
+#command substitution
+
+set y [set x 1]
+
+set y "[set x 1] hallo"
+
+# comment \
+asdf \
+adsf
+
+kein comment
+
+set x 1; # my comment \
+         dsdsdsdds
+
+
+set x \
+   1
+
+set y \
+   "1"   
+   
+   
+set x \1   
+
+{*}
+;
+         
+set x "\[set x 1 \]"
+
+proc foo {p1} {;}
+
+Object create foo;
+Class create foo;
+
+set x {x y z};
+
+set x [list x y z]
+
+set x {set set set}
+
+set x {incr y; incr y}
+eval $x
+
+set x {x y z; x y z}
+
+set x 1; set y 2
+set z 3
+
+proc foo {p1} {;}
+
+proc foo {p1} {;} != proc foo {p1} {}; == proc foo {p1} {;};
+
+proc foo {x y z} {;}
+
+

@@ -1,0 +1,164 @@
+# comments - there is only the concept of single-line comments
+# each line of a multi-line comment block must be introduced by a "#"
+
+puts "hello world"; # inline comments require a preceeding ";"
+puts {hello world}; # grouping words by "{}" makes them literal strings (there is no variable substitution etc.)
+
+# variable operations: naming, assignment, substitution
+set x "hello world"
+puts "x = $x"
+puts {x = $x}; # no variable replacement occurs -> $x is printed, rather than 'hello world'
+# 1. "[...]" blocks are evaluation blocks which are evaluated (executed)
+# before printing the final string (kind of a #{...} block in ruby,
+# but more powerful)
+# 2. [set x] corresponds to $x, i.e., the [set] command acts a
+# variable setter when supplied with two arguments and as a getter
+# when there is only a single argument
+puts "x = [set x]";
+
+# variable naming: there are no syntactic conventions, except for
+# using "$" as first character in a variable name (such as in
+# javascript)
+set first_name "russ"
+set lastName "sobernig"
+
+# in Tcl, there are no operators like + etc. for string manipulation,
+# but there are various commands a [string] command
+
+set _full_name "$first_name $lastName"; # string concatenation (within quotes)
+
+puts "1. $_full_name"
+
+# ... or the [append] and [string commands]
+# http://docs.activestate.com/activetcl/8.5/tcl/TclCmd/append.htm
+# http://docs.activestate.com/activetcl/8.5/tcl/TclCmd/string.htm
+
+append _full_name2 $first_name " " $lastName
+
+puts "2. $_full_name2"
+
+# arithemtic operations must be performed by a special command: [expr]
+# http://docs.activestate.com/activetcl/8.5/tcl/TclCmd/expr.htm
+
+set x [expr {2 + 3 + 4 + 5}]
+puts "x->$x"
+
+# multi-line assignments
+# `- multi-line strings: just a newline
+
+set _full_name "$first_name 
+lastName"
+
+puts "_full_name->$_full_name"
+
+# `- multi-line commands (!): use the backslash to bind lines
+# NOTE: there must not be a white space following the "\" !!!
+
+append _full_name2 $first_name \
+    " " $lastName
+
+puts "_full_name2->$_full_name2"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# Home assignments: Complete the following tasks (based on the equivalent
+# javascript and ruby examples)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+# if statements
+if {1} {puts "7. hello world!"}
+
+if {0} {puts "8. hello world!"}
+
+set weight 50
+
+if {$weight < 1} {
+   puts "very light"
+} elseif {$weight < 10} {
+   puts "a bit of a load"
+} elseif {$weight < 100} {
+   puts "heavy"
+} else {
+   puts "way too heavy"
+}
+
+# while loop
+set x 0
+while {$x < 4} {
+    puts "x = $x"
+    incr x
+}
+
+# for loop
+for {set x 0} {$x<4} {incr x} {
+   puts "x = $x"
+}
+
+# for/in loop
+#conform with ruby
+set some_array {"first" "second" 3}
+foreach idx $some_array {
+    puts "$idx"
+}
+
+#conform with javascript structure
+set some_array {"first" "second" 3}
+set x 0
+foreach idx $some_array {
+    puts "$x -> $idx"
+    incr x
+}
+
+# Container data structures: list (corresponds to arrays in other
+# javascript and ruby)
+# Note, there are individual commands for list management, i.e.,
+# [llength], [lsort], [lappend]!
+set x ""
+set some_array "first second 3"
+
+puts [lindex $some_array 0]
+puts [lindex $some_array 1]
+puts [lindex $some_array 2]
+
+puts [llength $some_array]
+
+set some_array [lreplace $some_array 2 2 "three"]
+
+set some_array [linsert $some_array 3 4]
+
+lappend some_array 5
+
+puts [lindex $some_array 4]
+
+# Container data structures: arrays (Tcl array are associative arrays,
+# i.e., hashes. The name is misleading!
+
+array set h {first_name Albert}
+array set h {last_name Einstein}
+
+puts $h(first_name)
+puts $h(last_name)
+
+#to ensure that the array h is empty
+unset h
+
+array set h {
+  first_name Albert
+  last_name Einstein
+}
+
+foreach k [array names h] {
+   puts "value of '$k' ->: $h($k)"
+}
+
+# define a function "square()":
+
+proc square x {
+    set result [expr {$x * $x}]
+}
+
+#to be conform with ruby file
+puts [square 2 ]
+
+
+
+
