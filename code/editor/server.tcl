@@ -102,7 +102,7 @@ Httpd::Wrk instproc response-GET {} {;# Respond to the GET-query
   puts stderr "[self] [self proc]"
   my instvar fileName
   my modifyXOTclSyntax
-  my modifyNextSyntax
+#  my modifyNextSyntax
   if {[file readable $fileName]} {
     my replyCode 200
     switch [file extension $fileName] { 
@@ -143,26 +143,23 @@ Httpd::Wrk instproc modifyNextSyntax { } {
   set oldFile [my readFile "src/mode-next-pre.js"]
   set keywords [nx::Class info methods]
   append keywords [nx::Object info methods]
-
-  regsub -all " " $keywords "|" keywordsnew
-  set keywordsnew [concat "builtinFunctions = lang.arrayToMap((\"" $keywordsnew "\").split(\"|\"));"]
-  regsub -all " " $keywordsnew "" keywordsnew
-  regsub "builtinFunctions;" $oldFile $keywordsnew  newFile
-  my writeFile "src/mode-next.js" $newFile
+  my writeFile "src/mode-next.js" [my replaceKeywords $oldFile $keywords]
 }
 
 Httpd::Wrk instproc modifyXOTclSyntax { } {
   set oldFile [my readFile "src/mode-xotcl-pre.js"]
   set keywords [lsearch -glob -not -all -inline [::xotcl::Class info methods] {__*}]
   append keywords [lsearch -glob -not -all -inline [::xotcl::Object info methods] {__*}]
+  my writeFile "src/mode-xotcl.js" [my replaceKeywords $oldFile $keywords]
+}
 
+Httpd::Wrk instproc replaceKeywords {oldFile keywords} {
   regsub -all " " $keywords "|" keywordsnew
   set keywordsnew [concat "builtinFunctions = lang.arrayToMap((\"" $keywordsnew "\").split(\"|\"));"]
   regsub -all " " $keywordsnew "" keywordsnew
   regsub "builtinFunctions;" $oldFile $keywordsnew  newFile
-  my writeFile "src/mode-xotcl.js" $newFile
+  return $newFile
 }
-
 
 
 Httpd::Wrk instproc sendFile {} {
