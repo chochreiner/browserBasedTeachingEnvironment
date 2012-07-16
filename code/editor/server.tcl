@@ -1,8 +1,8 @@
 package require XOTcl
 namespace import -force ::xotcl::*
 
-#package require nx
-#namespace import -force ::nx::*
+package require nx
+namespace import -force ::nx::*
 
 array set opt {-port 8081 -root ./}
 array set opt $argv
@@ -86,11 +86,11 @@ Httpd::Wrk instproc body {} {
     my response-[my set method]
   }
 }
-Httpd::Wrk instproc response-GET {} {;# Respond to the GET-query
+Httpd::Wrk instproc response-GET {} {
   puts stderr "[self] [self proc]"
   my instvar fileName path
   my modifyXOTclSyntax
-#  my modifyNextSyntax
+  my modifyNextSyntax
   my insertAvailableScripts
   
   #special handling for scripts
