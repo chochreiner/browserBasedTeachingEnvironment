@@ -38,6 +38,11 @@ Prerequisites:
 * When the procedure *procedureName* [of the object *concreteInstanceName*] is called, then *result* is returned.
 
 
+* When the procedure *procedureName* [of the object *concreteInstanceName*] is called, then *result* has to be smaller/greater 0 returned.
+* When the procedure *procedureName* [of the object *concreteInstanceName*] is called, then *result* must be between *lowerBound* and *upperBound*.
+* When the procedure *procedureName* [of the object *concreteInstanceName*] is called, then *result* must not be null.
+
+
 [...]    = optional fragments
 
 .../...  = alternative
