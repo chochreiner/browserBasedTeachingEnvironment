@@ -39,6 +39,8 @@ Prerequisites:
 
 Desired code output:
 
+```tcl
+
 package require XOTcl
 namespace import ::xotcl::*
 
@@ -66,3 +68,5 @@ objectB proc bar {} {
 #Task 4
 
 set result [objectA foo]
+
+```
