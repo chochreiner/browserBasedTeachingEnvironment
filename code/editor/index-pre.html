@@ -10,9 +10,17 @@
 </head>
 <body>
   <div id="header">
-    <h1>Web-based Code Editor</h1>
+    <h1>Browser based teaching environment</h1>
   </div>
   <div id="content">
+    <div id="sampleLocation">
+      <h4>Link to this script</h4>
+      <input type="text" name="country" value="http://xxx.at/2b00042f7481c7b056c4b410d28f33cf" readonly size="100">
+    </div>
+    <div id="description">
+      <h3>Task description</h3>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla lacinia, nibh a feugiat malesuada, turpis tortor gravida orci, a fermentum risus quam eget nulla. Aliquam commodo diam quis diam porta quis scelerisque nulla tristique. Donec vestibulum purus vel enim interdum vitae accumsan urna lobortis. Sed interdum ante a augue facilisis feugiat. Sed vitae lectus orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas eleifend ullamcorper tempor. Cras tincidunt commodo eros vel dapibus.
+    </div>    
     <div id="options">
       <div id="language">
         Language: 
@@ -31,19 +39,35 @@
       </div>         
     </div>
     <div id="wrapper">
-    <div id="editor"></div>
-      <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
-      <script>
-        var editor = ace.edit("editor");
-        editor.session.setMode("ace/mode/tcl");
-        editor.setTheme("ace/theme/monokai");
-      </script>
-    </div>  
-    <div id="operations">
-      <input type="submit" value="Evaluate" onclick="submitToServer()"/>
-    </div>
-    <pre id="result">
-    </pre>
+      <div id="editor"></div>
+        <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
+        <script>
+          var editor = ace.edit("editor");
+          editor.session.setMode("ace/mode/tcl");
+          editor.setTheme("ace/theme/monokai");
+        </script>
+      </div>  
+      <div id="operations">
+        <input type="submit" value="Run" onclick="submitToServer()"/>
+      </div>
+      <pre id="result">
+      </pre>
   </div>
+<div id="progress">
+  <h3> Progress: </h3>
+  <ul>
+    <li class="ok">Testcase 1</li>
+    <li class="fail">Testcase 2</li>
+    <li class="fail">Testcase 3</li>
+  <ul>
+</div>
+<div id="versions">
+  <h3> Version: </h3>
+  <ul>
+    <li><a href="#">Version 12:00</a></li>
+    <li><a href="#">Version 11:45</a></li>
+    <li><a href="#">Version 11:30</a></li>
+  <ul>    
+</div>
 </body>
 </head>

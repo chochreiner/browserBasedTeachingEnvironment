@@ -2,6 +2,34 @@ body {
 font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+#progress {
+  position: absolute;
+  right: 200px;
+  top: 100px;
+  height: 200px;
+  width: 200px;
+}
+
+#versions {
+  position: absolute;
+  right: 200px;
+  top: 400px;
+  height: 200px;
+  width: 200px;
+}
+
+#description {
+  width: 880px;
+  background-color: #C8C8C8;
+  padding: 5px;
+  margin: 20px;
+}
+
+#sampleLocation{
+  margin: 20px;
+
+}
+
 #editor {
   height: 500px; 
   width: 900px;
@@ -10,6 +38,7 @@ font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 #wrapper {
   height: 510px; 
   width: 910px;
+  margin: 20px;
 }
 
 #result {
@@ -48,4 +77,13 @@ font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 10px;
   overflow:auto;
   visibility: hidden;
+  margin: 20px;
+}
+
+.ok {
+  color: green;
+}
+
+.fail {
+  color: red;
 }
