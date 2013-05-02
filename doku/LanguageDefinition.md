@@ -22,9 +22,9 @@ Prerequisites:
 
 # Structural:
 
-* Given there exists an object *concreteObjectName* [of the type *className)].
-* Given there exists a variable *variableName* in the object/class *concreteInstanceName/className). 
-* Given there exists a procedure *procedureName* [for the class/object *className/concreteInstanceName)].
+* Given there exists an object *concreteObjectName* [of the type *className*].
+* Given there exists a variable *variableName* in the object/class *concreteInstanceName/className*. 
+* Given there exists a procedure *procedureName* [for the class/object *className/concreteInstanceName*].
 * Given there exists a class *classname* [that takes one parameter].
 * Given that the object *concreteObjectName* is assigned to variable *variableName* [in the object *concreteInstanceName*].
 * Given there exists a class *classname*.
@@ -39,5 +39,7 @@ Prerequisites:
 
 
 [...]    = optional fragments
+
 .../...  = alternative
+
 *...*    = concrete name of object/variable/result 
