@@ -1,32 +1,32 @@
-Description:
+# Description:
 In this example you will create objects and procedures and you will call them.
 
-Task 1:
+**Task 1:**
 Define the objects named objectA and objectB.
 
 - Given there exists and object objectA.
 - Given there exists and object objectB.
 
-Task 2:
+**Task 2:**
 Define the instance variables refA for objectB and refB for objectA and assign objectA to refA and objectB to refB.
 
 Prerequisites:
-- Task 1
+Task 1
 
-* Given there exists an variable refB in the object objectA.
-* Given there exists an variable refA in the object objectB.
+- Given there exists an variable refB in the object objectA.
+- Given there exists an variable refA in the object objectB.
 
-Task 3:
+**Task 3:**
 Define the procedures foo and bar, where foo is defined for objectA and calls the procedure bar that is defined for objectB.
 The procedure bar should return the string "foobar".
 
 Prerequisites:
-- Task 2
+Task 2
 
 * Given there exists a procedure foo for the object objectA.
 * Given there exists a procedure bar for the object objectB.
 
-Task 4:
+**Task 4:**
 Execute the procedure foo of objectA and store the returnvalue to the variable result.
 
 Prerequisites:
