@@ -1,13 +1,13 @@
 package require XOTcl
 namespace import -force ::xotcl::*
 
-#package require nx
-#namespace import -force ::nx::*
+package require nx
+namespace import -force ::nx::*
 
 array set opt {-port 8081 -root ./}
 array set opt $argv
 
-Class Httpd -parameter { 
+xotcl::Class Httpd -parameter { 
   {port 80} 
   {root /home/httpd/html/} 
   {worker Httpd::Wrk} 
@@ -27,7 +27,7 @@ Httpd instproc accept {socket ipaddr port} {
 	-socket $socket -ipaddr $ipaddr -port $port
 }
 
-Class Httpd::Wrk -parameter {socket port ipaddr}
+xotcl::Class Httpd::Wrk -parameter {socket port ipaddr}
 Httpd::Wrk array set codes { 200 "Data follows" 404 "Not Found" }
 Httpd::Wrk instproc Date secs {clock format $secs -format {%a, %d %b %Y %T %Z}}
 Httpd::Wrk instproc close {} {		
@@ -135,9 +135,9 @@ Httpd::Wrk instproc handlereturn {i args} {
 
 Httpd::Wrk instproc modifyNextSyntax { } {
   set oldFile [my readFile "src/mode-next-pre.js"]
-#  set keywords [nx::Class info methods]
-#  append keywords [nx::Object info methods]
-#  my writeFile "src/mode-next.js" [my replaceKeywords $oldFile $keywords]
+  set keywords [nx::Class info methods]
+  append keywords [nx::Object info methods]
+  my writeFile "src/mode-next.js" [my replaceKeywords $oldFile $keywords]
 }
 
 Httpd::Wrk instproc modifyXOTclSyntax { } {
