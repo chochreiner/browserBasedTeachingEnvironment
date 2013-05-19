@@ -4,13 +4,15 @@ namespace import -force ::xotcl::*
 
 # definitons to test the script
 set ::story "Given there exists a procedure test2.|Given there exists a procedure test3 with the parameter asdf.
+\Given that the variable asdf is assigned to the value -1.
 \When the procedure test is called, 1 is returned.
 \When the procedure test is called, 2 is returned&Given there exists an object objectC of the type qwert.
 \Given there exists an object objectE | Given there exists an object objectC.
 \Given there exists an object objectB."
 
 set ::submittedCode "proc test {} {return 1}
-\proc test1 {asdf} {return \$asdf}"
+\proc test1 {asdf} {return \$asdf}
+\set asdf -1"
 
 #Configuration
 #strictStory = only evaluate the next sentence, iff the current sentence is valid
@@ -92,6 +94,19 @@ proc evaluate {sentence} {
     return    
   }
   
+  if {[regexp {Given that the variable (.+) is assigned to the value (.+)} $sentenceToEvaluate _ param1 param2]} {
+    append script "if {$$param1 != $param2} {append auditVariable $$param1}"
+    append script "\n return \$auditVariable"
+ 
+ 
+    set result [interp eval $i $script]
+        
+    if {$result == "failed"} {
+      append ::overallFeedback "Failed: $sentence \n"
+      return "Failed: $sentence \n"  
+    }
+  }  
+  
   if {[regexp {When the procedure (.+) is called, (.+) is returned} $sentenceToEvaluate _ param1 param2]} {
     append script "if {\[$param1\] != $param2} {append auditVariable \"failed\"}"
     append script "\n return \$auditVariable"
@@ -116,6 +131,7 @@ proc evaluate {sentence} {
     return    
   }
 
+
   
  
 # Structural:
@@ -124,7 +140,7 @@ proc evaluate {sentence} {
 #* Given there exists a variable *variableName* in the object/class *concreteInstanceName/className*. 
 #* Given there exists a procedure *procedureName* [for the class/object *className/concreteInstanceName*].
 #* Given there exists a class *classname* [that takes one parameter].
-#* Given that the object *concreteObjectName* is assigned to variable *variableName* [in the object *concreteInstanceName*].
+#* Given that the variable *concreteObjectName* is assigned to the value *variableName* [in the object *concreteInstanceName*].
 
 # Behavioral:
 
