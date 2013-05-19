@@ -56,7 +56,7 @@ proc evaluate {sentence} {
   set i [interp create -safe]
 
   # FIXME cannot create and XOTCL environment within a safe interpreter
-  # set script "package require XOTcl \n namespace import -force ::xotcl::* \n set auditVariable \"\"\n"
+  #set script "package require XOTcl \n namespace import -force ::xotcl::* \n set auditVariable \"\"\n"
   set script "set auditVariable \"\" \n"
   append script "\n $::submittedCode \n"
  
@@ -103,8 +103,24 @@ proc evaluate {sentence} {
       return "Failed: $sentence \n"  
     }
   }
- 
 
+
+  
+  if {[regexp {When the procedure (.+) is called, the program does not terminate.} $sentenceToEvaluate _ param1]} {
+  append script "$param1"
+  
+    if {[catch {set result [interp eval $i $script]} msg x]} {
+      if {[regexp {too many nested evaluations (.+)} $msg _ _]} {
+        append ::overallFeedback "Failed: $sentence \n"
+        return "Failed: $sentence \n"
+      }
+    }
+    return    
+  }
+
+  
+ 
+#too many nested evaluations
 
 # Structural:
 
@@ -121,10 +137,6 @@ proc evaluate {sentence} {
 #* When the procedure *procedureName* [of the object *concreteInstanceName* is called] [with the parmeter *parameter*], the program does not terminate.
 #* When the procedure *procedureName* [of the object *concreteInstanceName*] is called, then *Result* is displayed on the command line.
 
-
-#* When the procedure *procedureName* [of the object *concreteInstanceName*] is called, then *result* has to be smaller/greater 0 returned.
-#* When the procedure *procedureName* [of the object *concreteInstanceName*] is called, then *result* must be between *lowerBound* and *upperBound*.
-#* When the procedure *procedureName* [of the object *concreteInstanceName*] is called, then *result* must not be null.
 
   return 
 }
