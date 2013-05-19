@@ -1,29 +1,20 @@
-#known issues
-#
-#
-#
-
-
-
 package require XOTcl
 namespace import -force ::xotcl::*
 
 
 # definitons to test the script
-set ::story "Given there exists a procedure test.|Given there exists a procedure test with the parameter asdf.
+set ::story "Given there exists a procedure test2.|Given there exists a procedure test3 with the parameter asdf.
 \When the procedure test is called, 1 is returned.
-\When the procedure test is called, 2 is returned."
-#& Given there exists an object objectC of the type qwert."
-#\Given there exists an object objectE | Given there exists an object objectC.
-#\Given there exists an object objectB."
+\When the procedure test is called, 2 is returned&Given there exists an object objectC of the type qwert.
+\Given there exists an object objectE | Given there exists an object objectC.
+\Given there exists an object objectB."
 
 set ::submittedCode "proc test {} {return 1}
 \proc test1 {asdf} {return \$asdf}"
 
-
 #Configuration
 #strictStory = only evaluate the next sentence, iff the current sentence is valid
-set ::strictStory "1"
+set ::strictStory 0
 set ::::terminateFlag 0
 set ::overallFeedback ""
 
@@ -58,8 +49,6 @@ proc orCase {sentence} {
     }
   }
 }
-
-
 
 
 proc evaluate {sentence} {
@@ -137,7 +126,7 @@ proc evaluate {sentence} {
 #* When the procedure *procedureName* [of the object *concreteInstanceName*] is called, then *result* must be between *lowerBound* and *upperBound*.
 #* When the procedure *procedureName* [of the object *concreteInstanceName*] is called, then *result* must not be null.
 
-  return ""
+  return 
 }
 
 
