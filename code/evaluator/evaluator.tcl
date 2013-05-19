@@ -103,8 +103,6 @@ proc evaluate {sentence} {
       return "Failed: $sentence \n"  
     }
   }
-
-
   
   if {[regexp {When the procedure (.+) is called, the program does not terminate.} $sentenceToEvaluate _ param1]} {
   append script "$param1"
@@ -120,8 +118,6 @@ proc evaluate {sentence} {
 
   
  
-#too many nested evaluations
-
 # Structural:
 
 #* Given there exists an object *concreteObjectName* [of the type *className*].
