@@ -3,7 +3,9 @@ namespace import -force ::nx::*
 
 
 # definitons to test the script
-set ::story "Given there exists an object objectA of the type C."
+set ::story "Given there exists a procedure test for the object asdfga."
+#\Given there exists a procedure test for the object asdfg.
+#\Given there exists an object objectA of the type C."
 #\Given there exists a procedure test2.|Given there exists a procedure test3 with the parameter asdf.
 #\Given that the variable asdf is assigned to the value -1.
 #\When the procedure test is called, 1 is returned.
@@ -17,8 +19,11 @@ set ::story "Given there exists an object objectA of the type C."
 set ::submittedCode "proc test {} {return 1}
 \proc test1 {asdf} {return \$asdf}
 \set asdf -1
-\Class create C {}
-\C create objectA"
+\Object create asdfg
+\ asdfg method test {} { }"
+#\Class create C {}
+#\C create objectA
+#\C method test {} { return 0}"
 
 
 #Configuration
@@ -102,6 +107,32 @@ proc evaluate {sentence} {
     return
   }  
  
+  if {[regexp {Given there exists a procedure (.+) for the object (.+)} $sentenceToEvaluate _ param1 param2]} {
+    append script "$param2 info method exists $param1"
+
+    catch {set result [interp eval $i $script]} msg x
+
+    if {$result == "0" || [regexp {invalid command name (.+)} $msg _ _] } {
+      append ::overallFeedback "Failed: $sentence \n"
+      return "Failed: $sentence \n"  
+    }
+    return
+  }  
+
+  #FIXME what are the return possibilities of the this method call? also 0/1
+  if {[regexp {Given there exists a procedure (.+) for the class (.+)} $sentenceToEvaluate _ param1 param2]} {
+    append script "$param2 ?class? info method exists $param1"
+
+    catch {set result [interp eval $i $script]} msg x
+    if {$result == "0"} {
+      append ::overallFeedback "Failed: $sentence \n"
+      return "Failed: $sentence \n"  
+    }
+    return
+  }  
+ 
+
+ 
   if {[regexp {Given there exists a procedure (.+) with the parameter (.+)} $sentenceToEvaluate _ param1 param2]} {
   append script "set x \[$param1 $param2]"
   
@@ -169,9 +200,9 @@ proc evaluate {sentence} {
   
  
 # Structural:
+  #* Given there exists a variable *variableName* in the object/class *concreteInstanceName/className*. 
 
-#* Given there exists a variable *variableName* in the object/class *concreteInstanceName/className*. 
-#* Given there exists a procedure *procedureName* [for the class/object *className/concreteInstanceName*].
+
 #* Given there exists a class *classname* [that takes one parameter].
 #* Given that the variable *concreteObjectName* is assigned to the value *variableName* [in the object *concreteInstanceName*].
 
