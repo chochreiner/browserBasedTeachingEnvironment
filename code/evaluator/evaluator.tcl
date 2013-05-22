@@ -55,13 +55,19 @@ proc orCase {sentence} {
 
 proc evaluate {sentence} {
   set sentenceToEvaluate [string trim $sentence]
-  set i [interp create -safe]
+# package require does not work in safe mode
+# set i [interp create -safe]
+  set i [interp create]
 
-  # FIXME cannot create and XOTCL environment within a safe interpreter
-  #set script "package require XOTcl \n namespace import -force ::xotcl::* \n set auditVariable \"\"\n"
-  set script "set auditVariable \"\" \n"
+  set script ""
+  append script "package require nx \n namespace import -force ::nx::* \n "
+  append script "set auditVariable \"\" \n"
+
+  
   append script "\n $::submittedCode \n"
- 
+
+  
+  
   if {[catch {set result [interp eval $i $script]} msg x]} {
     set result "Errormessage: $msg \n\n"
     append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
