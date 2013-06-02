@@ -21,6 +21,31 @@ function changeScript() {
 }
 
 function submitToServer() {
+submitToServerValidation();
+submitToServerResult();
+}
+
+function submitToServerValidation() {
+  var xmlhttp;
+  if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp=new XMLHttpRequest();
+  } else {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+   xmlhttp.onreadystatechange=function() {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+      var result = xmlhttp.responseText;
+      editor.setValue(result)
+      xmlhttp.readyState=3;
+    }
+  }
+  xmlhttp.open("POST","/validate",true);
+xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp.send(editor.getValue());
+}
+
+//used for result field
+function submitToServerResult() {
   var xmlhttp;
   if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
     xmlhttp=new XMLHttpRequest();
@@ -35,14 +60,8 @@ function submitToServer() {
       var line = result.match(/on line: (.*)/);
       editor.gotoLine(line[1]);
     }
-    if (xmlhttp.readyState==4 && xmlhttp.status==206) {
-      var result = xmlhttp.responseText;
-      editor.setValue(result)
-    }
   }
-  xmlhttp.open("POST",".",true);
+  xmlhttp.open("POST","/execute",true);
 xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 xmlhttp.send(editor.getValue());
-
 }
-

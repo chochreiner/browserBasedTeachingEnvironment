@@ -118,22 +118,31 @@ Httpd::Wrk instproc response-GET {} {
 Httpd::Wrk instproc response-POST {} {
   my instvar path asdfghjkl requestBody
 
-  my replyCode 206
-  my sendDynamicString [evaluateSentences $requestBody]
+puts $path
+
+  if {$path == "/validate"} {
+   my replyCode 200
+   my sendDynamicString [evaluateSentences $requestBody]
+   my close
+  }
+
+  if {$path=="/execute"} {
+   set script $requestBody
+   concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"
+   set i [interp create -safe]
+   my replyCode 200
+   interp alias $i puts {} my handlereturn $i  
+   if {[catch {set result [interp eval $i $script]} msg x]} {
+     set result "Errormessage: $msg \n\n"
+     append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
+     append result "on line: [dict get $x -errorline] \n\n"
+   }
+   my sendDynamicString $result
+   my close
+  }
 
 
-  set script $requestBody
-  concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"
-  set i [interp create -safe]
-  my replyCode 200
-  interp alias $i puts {} my handlereturn $i  
-  if {[catch {set result [interp eval $i $script]} msg x]} {
-    set result "Errormessage: $msg \n\n"
-    append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
-    append result "on line: [dict get $x -errorline] \n\n"
-  }
-  my sendDynamicString $result
-  my close
+#  my close
 }
 
 Httpd::Wrk instproc handlereturn {i args} {
@@ -204,7 +213,7 @@ Httpd::Wrk instproc sendDynamicString {content {contentType text/html}} {
   my sendLine "Content-Length: [string length $content]\n"
   fconfigure $socket -encoding [encoding system] -translation binary
   puts -nonewline $socket $content
-  my close
+#  my close
 }
 Httpd::Wrk instproc readFile fn {
   set f [open $fn]
