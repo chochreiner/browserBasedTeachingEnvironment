@@ -30,7 +30,7 @@ Httpd instproc accept {socket ipaddr port} {
 }
 
 xotcl::Class Httpd::Wrk -parameter {socket port ipaddr}
-Httpd::Wrk array set codes { 200 "Data follows" 404 "Not Found" }
+Httpd::Wrk array set codes { 200 "Data follows" 206 "Data follows part 1" 404 "Not Found" }
 Httpd::Wrk instproc Date secs {clock format $secs -format {%a, %d %b %Y %T %Z}}
 Httpd::Wrk instproc close {} {		
   puts stderr "[self] [self proc] [my socket] "
@@ -114,40 +114,26 @@ Httpd::Wrk instproc response-GET {} {
   }
 }
 
-#Httpd::Wrk instproc response-POST {} {;# POST method
-#  my instvar path asdfghjkl requestBody
-#  set script $requestBody
-#  concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"
-#  set i [interp create -safe]
-#  my replyCode 200
-#  interp alias $i puts {} my handlereturn $i  
-#  if {[catch {set result [interp eval $i $script]} msg x]} {
-#    set result "Errormessage: $msg \n\n"
-#    append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
-#    append result "on line: [dict get $x -errorline] \n\n"
-#  }
-    
-#  my sendDynamicString $result
-#  my close
-#}
+
+Httpd::Wrk instproc response-POST {} {
+  my instvar path asdfghjkl requestBody
+
+  my replyCode 206
+  my sendDynamicString [evaluateSentences $requestBody]
 
 
-Httpd::Wrk instproc response-POST {} {;# POST method
-  my instvar path asdfghjkl requestBody
-  set script $requestBody
-  concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"
-  set i [interp create -safe]
+  set script $requestBody
+  concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"
+  set i [interp create -safe]
   my replyCode 200
-  interp alias $i puts {} my handlereturn $i  
-  if {[catch {set result [interp eval $i $script]} msg x]} {
+  interp alias $i puts {} my handlereturn $i  
+  if {[catch {set result [interp eval $i $script]} msg x]} {
     set result "Errormessage: $msg \n\n"
     append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
     append result "on line: [dict get $x -errorline] \n\n"
   }
   my sendDynamicString $result
-  my close
-#  my replyCode 200
-#  my sendDynamicString [evaluateSentences $requestBody]
+  my close
 }
 
 Httpd::Wrk instproc handlereturn {i args} {

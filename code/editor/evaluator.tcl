@@ -75,7 +75,12 @@ proc evaluate {sentence} {
     append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
     append result "on line: [dict get $x -errorline] \n\n"
     append ::overallFeedback "The provided code is not executable: \n $result \n"
-    set ::story "\xfff The provided code is not exectable. $::story" 
+    
+    if {[regexp {The provided code is not executable. (.+)} $::story _ param1]} {
+      # do nothing
+    } else {
+      set ::story "\#fff The provided code is not executable. \n \n  $::story"     
+    }
     return "The provided code is not executable \n"
   }
  

@@ -35,6 +35,10 @@ function submitToServer() {
       var line = result.match(/on line: (.*)/);
       editor.gotoLine(line[1]);
     }
+    if (xmlhttp.readyState==4 && xmlhttp.status==206) {
+      var result = xmlhttp.responseText;
+      editor.setValue(result)
+    }
   }
   xmlhttp.open("POST",".",true);
 xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
