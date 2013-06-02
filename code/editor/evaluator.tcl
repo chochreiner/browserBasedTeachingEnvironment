@@ -75,6 +75,7 @@ proc evaluate {sentence} {
     append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
     append result "on line: [dict get $x -errorline] \n\n"
     append ::overallFeedback "The provided code is not executable: \n $result \n"
+    set ::story "\xfff The provided code is not exectable. $::story" 
     return "The provided code is not executable \n"
   }
  
@@ -85,6 +86,7 @@ proc evaluate {sentence} {
     catch {set result [interp eval $i $script]} msg x
     if {$result == "0" || [regexp {expected class but got (.+)} $msg _ _] } {
       append ::overallFeedback "Failed: $sentence \n"
+      regsub -all $sentenceToEvaluate $::story "\#fff $sentenceToEvaluate" ::story
       return "Failed: $sentence \n"  
     }
     return
@@ -96,6 +98,7 @@ proc evaluate {sentence} {
     set result [interp eval $i $script]
     if {$result == "0"} {
       append ::overallFeedback "Failed: $sentence \n"
+      regsub -all $sentenceToEvaluate $::story "\#fff $sentenceToEvaluate" ::story
       return "Failed: $sentence \n"  
     }
     return
@@ -108,6 +111,7 @@ proc evaluate {sentence} {
 
     if {$result == "0" || [regexp {invalid command name (.+)} $msg _ _] } {
       append ::overallFeedback "Failed: $sentence \n"
+      regsub -all $sentenceToEvaluate $::story "\#fff $sentenceToEvaluate" ::story
       return "Failed: $sentence \n"  
     }
     return
@@ -120,6 +124,7 @@ proc evaluate {sentence} {
     catch {set result [interp eval $i $script]} msg x
     if {$result == "0"} {
       append ::overallFeedback "Failed: $sentence \n"
+      regsub -all $sentenceToEvaluate $::story "\#fff $sentenceToEvaluate" ::story
       return "Failed: $sentence \n"  
     }
     return
@@ -133,6 +138,7 @@ proc evaluate {sentence} {
     if {[catch {set result [interp eval $i $script]} msg x]} {
       if {[regexp {wrong # args: should be (.+)} $msg _ _]} {
         append ::overallFeedback "Failed: $sentence \n"
+        regsub -all $sentenceToEvaluate $::story "\#fff $sentenceToEvaluate" ::story
         return "Failed: $sentence \n"
       }
     }
@@ -145,6 +151,7 @@ proc evaluate {sentence} {
     if {[catch {set result [interp eval $i $script]} msg x]} {
       if {$msg == "invalid command name \"$param1\""} {
         append ::overallFeedback "Failed: $sentence \n"
+        regsub -all $sentenceToEvaluate $::story "\#fff $sentenceToEvaluate" ::story
         return "Failed: $sentence \n"
       }
     }
@@ -160,6 +167,7 @@ proc evaluate {sentence} {
         
     if {$result == "failed"} {
       append ::overallFeedback "Failed: $sentence \n"
+      regsub -all $sentenceToEvaluate $::story "\#fff $sentenceToEvaluate" ::story
       return "Failed: $sentence \n"  
     }
     return
@@ -173,6 +181,7 @@ proc evaluate {sentence} {
     
     if {$result == "failed"} {
       append ::overallFeedback "Failed: $sentence \n"
+      regsub -all $sentenceToEvaluate $::story "\#fff $sentenceToEvaluate" ::story
       return "Failed: $sentence \n"  
     }
     return
@@ -184,6 +193,7 @@ proc evaluate {sentence} {
     if {[catch {set result [interp eval $i $script]} msg x]} {
       if {[regexp {too many nested evaluations (.+)} $msg _ _]} {
         append ::overallFeedback "Failed: $sentence \n"
+        regsub -all $sentenceToEvaluate $::story "\#fff $sentenceToEvaluate" ::story
         return "Failed: $sentence \n"
       }
     }
@@ -213,7 +223,13 @@ proc evaluate {sentence} {
 
 proc evaluateSentences {story} {
 
+#clear previous information
+regsub -all {fff} $story "" story
+
+
 set ::story $story
+
+
 
 #Split different sentences
 set sentences [split $story ".\n"]
@@ -243,7 +259,11 @@ if {[string length [evaluate $sentence]] > 0} {
 
 }
 
-return $::overallFeedback
+regsub -all {ooo #} $::story "ooo" ::story
+regsub -all {fff #} $::story "fff" ::story
+
+
+return $::story
 
 }
 

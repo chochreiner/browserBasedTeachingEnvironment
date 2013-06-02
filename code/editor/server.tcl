@@ -131,23 +131,23 @@ Httpd::Wrk instproc response-GET {} {
 #  my close
 #}
 
+
 Httpd::Wrk instproc response-POST {} {;# POST method
-#  my instvar path asdfghjkl requestBody
-#  set script $requestBody
-#  concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"
-#  set i [interp create -safe]
-  my replyCode 200
-#  interp alias $i puts {} my handlereturn $i  
-#  if {[catch {set result [interp eval $i $script]} msg x]} {
-#    set result "Errormessage: $msg \n\n"
-#    append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
-#    append result "on line: [dict get $x -errorline] \n\n"
-#  }
-  
-  
-  
-  my sendDynamicString [evaluateSentences $requestBody]
-  my close
+  my instvar path asdfghjkl requestBody
+  set script $requestBody
+  concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"
+  set i [interp create -safe]
+  my replyCode 200
+  interp alias $i puts {} my handlereturn $i  
+  if {[catch {set result [interp eval $i $script]} msg x]} {
+    set result "Errormessage: $msg \n\n"
+    append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
+    append result "on line: [dict get $x -errorline] \n\n"
+  }
+  my sendDynamicString $result
+  my close
+#  my replyCode 200
+#  my sendDynamicString [evaluateSentences $requestBody]
 }
 
 Httpd::Wrk instproc handlereturn {i args} {

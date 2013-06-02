@@ -155,7 +155,10 @@ var TclHighlightRules = function() {
 
     this.$rules = {
         "start" : [
-           {
+           {    token : "invalid",
+                regex : "#fff.*$",
+                next  : "commentfollow"
+            }, {
                 token : "comment",
                 merge : true,
                 regex : "#.*\\\\$",
@@ -212,6 +215,9 @@ var TclHighlightRules = function() {
         ],
         "commandItem" : [
             {
+                token : "invalid",
+                regex : "#fff.*$",
+            }, {
                 token : "comment",
                 regex : "#.*$",
                 next  : "start"

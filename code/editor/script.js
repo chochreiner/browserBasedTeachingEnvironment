@@ -39,5 +39,6 @@ function submitToServer() {
   xmlhttp.open("POST",".",true);
 xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 xmlhttp.send(editor.getValue());
+
 }
 
