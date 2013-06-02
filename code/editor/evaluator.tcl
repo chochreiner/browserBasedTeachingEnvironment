@@ -1,22 +1,16 @@
 package require nx
 namespace import -force ::nx::*
 
-
-# definitons to test the script
-set ::story "Given there exists a procedure test for the object asdfga."
-#\Given there exists a procedure test for the object asdfg.
-#\Given there exists an object objectA of the type C."
-#\Given there exists a procedure test2.|Given there exists a procedure test3 with the parameter asdf.
-#\Given that the variable asdf is assigned to the value -1.
-#\When the procedure test is called, 1 is returned.
-#\When the procedure test is called, 2 is returned&Given there exists an object objectC of the type qwert.
-#\Given there exists an object objectE | Given there exists an object objectC.
-#\Given there exists an object objectB."
-
-
-
-
-set ::submittedCode "proc test {} {return 1}
+set ::story1 "# Given there exists a procedure test for the object asdfga.
+\# Given there exists a procedure test for the object asdfg.
+\# Given there exists an object objectA of the type C.
+\# Given there exists a procedure test2.|Given there exists a procedure test3 with the parameter asdf.
+\# Given that the variable asdf is assigned to the value -1.
+\# When the procedure test is called, 1 is returned.
+\# When the procedure test is called, 2 is returned&Given there exists an object objectC of the type qwert.
+\# Given there exists an object objectE | Given there exists an object objectC.
+\# Given there exists an object objectB.
+proc test {} {return 1}
 \proc test1 {asdf} {return \$asdf}
 \set asdf -1
 \Object create asdfg
@@ -74,7 +68,7 @@ proc evaluate {sentence} {
   append script "package require nx \n namespace import -force ::nx::* \n "
   append script "set auditVariable \"\" \n"
 
-  append script "\n $::submittedCode \n"
+  append script "\n $::story \n"
   
   if {[catch {set result [interp eval $i $script]} msg x]} {
     set result "Errormessage: $msg \n\n"
@@ -217,14 +211,16 @@ proc evaluate {sentence} {
   return 
 }
 
+proc evaluateSentences {story} {
 
+set ::story $story
 
 #Split different sentences
 set sentences [split $story ".\n"]
 
 foreach sentence $sentences {
 
-if {$strictStory == 1 && $::terminateFlag == 1} {
+if {$::strictStory == 1 && $::terminateFlag == 1} {
   puts $::overallFeedback
   return
 }
@@ -245,7 +241,11 @@ if {[string length [evaluate $sentence]] > 0} {
   set ::terminateFlag 1
 }
 
+}
+
+return $::overallFeedback
 
 }
 
-puts $::overallFeedback
+
+#puts [evaluateSentences $story1]
