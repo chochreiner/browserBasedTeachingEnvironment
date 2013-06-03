@@ -1,25 +1,6 @@
 package require nx
 namespace import -force ::nx::*
 
-set ::story1 "# Given there exists a procedure test for the object asdfga.
-\# Given there exists a procedure test for the object asdfg.
-\# Given there exists an object objectA of the type C.
-\# Given there exists a procedure test2.|Given there exists a procedure test3 with the parameter asdf.
-\# Given that the variable asdf is assigned to the value -1.
-\# When the procedure test is called, 1 is returned.
-\# When the procedure test is called, 2 is returned&Given there exists an object objectC of the type qwert.
-\# Given there exists an object objectE | Given there exists an object objectC.
-\# Given there exists an object objectB.
-proc test {} {return 1}
-\proc test1 {asdf} {return \$asdf}
-\set asdf -1
-\Object create asdfg
-\ asdfg method test {} { }"
-#\Class create C {}
-#\C create objectA
-#\C method test {} { return 0}"
-
-
 #Configuration
 #strictStory = only evaluate the next sentence, iff the current sentence is valid
 set ::strictStory 0
@@ -60,6 +41,7 @@ proc orCase {sentence} {
 
 proc evaluate {sentence} {
   set sentenceToEvaluate [string trim $sentence]
+# FIXME  
 # package require does not work in safe mode
 # set i [interp create -safe]
   set i [interp create]
@@ -84,7 +66,6 @@ proc evaluate {sentence} {
     return "The provided code is not executable \n"
   }
  
-
    if {[regexp {Given there exists an object (.+) of the type (.+)} $sentenceToEvaluate _ param1 param2]} {
     append script "$param1 info has type $param2"
 
@@ -135,8 +116,6 @@ proc evaluate {sentence} {
     return
   }  
  
-
- 
   if {[regexp {Given there exists a procedure (.+) with the parameter (.+)} $sentenceToEvaluate _ param1 param2]} {
   append script "set x \[$param1 $param2]"
   
@@ -166,7 +145,6 @@ proc evaluate {sentence} {
   if {[regexp {Given that the variable (.+) is assigned to the value (.+)} $sentenceToEvaluate _ param1 param2]} {
     append script "if {$$param1 != $param2} {append auditVariable \"failed\"}"
     append script "\n return \$auditVariable"
- 
  
     set result [interp eval $i $script]
         
@@ -205,13 +183,10 @@ proc evaluate {sentence} {
     return    
   }
 
-
   
- 
+# TBD 
 # Structural:
   #* Given there exists a variable *variableName* in the object/class *concreteInstanceName/className*. 
-
-
 #* Given there exists a class *classname* [that takes one parameter].
 #* Given that the variable *concreteObjectName* is assigned to the value *variableName* [in the object *concreteInstanceName*].
 
@@ -221,20 +196,14 @@ proc evaluate {sentence} {
 #* When the procedure *procedureName* [of the object *concreteInstanceName* is called] [with the parmeter *parameter*], then the procedure *procedureName2* [of the object *concreteInstanceName2* is called] is called.
 #* When the procedure *procedureName* [of the object *concreteInstanceName* is called] [with the parmeter *parameter*], the program does not terminate.
 #* When the procedure *procedureName* [of the object *concreteInstanceName*] is called, then *Result* is displayed on the command line.
-
-
   return 
 }
 
 proc evaluateSentences {story} {
-
 #clear previous information
 regsub -all {fff} $story "" story
 
-
 set ::story $story
-
-
 
 #Split different sentences
 set sentences [split $story ".\n"]
@@ -267,10 +236,5 @@ if {[string length [evaluate $sentence]] > 0} {
 regsub -all {ooo #} $::story "ooo" ::story
 regsub -all {fff #} $::story "fff" ::story
 
-
 return $::story
-
 }
-
-
-#puts [evaluateSentences $story1]
