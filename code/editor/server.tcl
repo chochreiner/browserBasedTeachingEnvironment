@@ -118,11 +118,9 @@ Httpd::Wrk instproc response-GET {} {
 Httpd::Wrk instproc response-POST {} {
   my instvar path asdfghjkl requestBody
 
-puts $path
-
   if {$path == "/validate"} {
    my replyCode 200
-   my sendDynamicString [evaluateSentences $requestBody]
+   my sendDynamicString [evaluator evaluateSentences $requestBody]
    my close
   }
 
