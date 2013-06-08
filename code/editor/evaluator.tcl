@@ -58,7 +58,7 @@ Object create evaluator {
       if {[regexp {The provided code is not executable. (.+)} ${:story} _ param1]} {
         # do nothing
       } else {
-        set :story "\#fff The provided code is not executable. \n \n  ${:story}"     
+        set :story "\#fff The provided code is not executable. \n \# $msg \n \n  ${:story}"     
       }
 
       return "The provided code is not executable \n"
