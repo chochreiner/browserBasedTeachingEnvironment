@@ -3,11 +3,11 @@ namespace import -force ::nx::*
 
 Object create evaluator {
   #strictStory = only evaluate the next sentence, iff the current sentence is valid
-  :variable strictStory {}
-  :variable terminateFlag {}
-  :variable story {}
+  :object variable strictStory {}
+  :object variable terminateFlag {}
+  :object variable story {}
 
-  :method andCase {sentence} {
+  :object method andCase {sentence} {
     set subSentences [split $sentence "&"]
     set result ""
   
@@ -22,7 +22,7 @@ Object create evaluator {
     }
   }
 
-  :method orCase {sentence} {
+  :object method orCase {sentence} {
     set subSentences [split $sentence "|"]
     set result ""
     
@@ -41,7 +41,7 @@ Object create evaluator {
     }
   }
 
-  :method evaluate {sentence} {
+  :object method evaluate {sentence} {
     set sentenceToEvaluate [string trim $sentence]
 
     # FIXME  
@@ -197,7 +197,7 @@ Object create evaluator {
     return 
   }
 
-  :public method evaluateSentences {story} {
+  :public object method evaluateSentences {story} {
     #clear previous information
     regsub -all {fff} $story "" story
 

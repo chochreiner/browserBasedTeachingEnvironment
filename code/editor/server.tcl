@@ -126,9 +126,11 @@ Httpd::Wrk instproc response-POST {} {
 
 
   # FIXME
+  puts stderr PATH=$path
   if {$path=="/execute"} {
    set script $requestBody
-   concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"
+    #concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"
+    set script {package req nx;}
    set i [interp create -safe]
    my replyCode 200
    interp alias $i puts {} my handlereturn $i  
@@ -136,6 +138,7 @@ Httpd::Wrk instproc response-POST {} {
      set result "Errormessage: $msg \n\n"
      append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
      append result "on line: [dict get $x -errorline] \n\n"
+     puts stderr result=$result
    }
    my sendDynamicString $result
    my close
