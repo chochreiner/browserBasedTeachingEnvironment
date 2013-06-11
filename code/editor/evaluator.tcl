@@ -1,6 +1,9 @@
 package require nx
 namespace import -force ::nx::*
 
+source [file join [file dirname [info script]] safe.tcl]
+
+
 Object create evaluator {
   #strictStory = only evaluate the next sentence, iff the current sentence is valid
   :object variable strictStory {}
@@ -43,18 +46,21 @@ Object create evaluator {
 
   :object method evaluate {sentence} {
     set sentenceToEvaluate [string trim $sentence]
-
-    # FIXME  
-    # package require does not work in safe mode
-    # set i [interp create -safe]
+        
+   SafeInterp create safeInterpreter
+   safeInterpreter requirePackage {nsf}
+   safeInterpreter requirePackage {nx}
+    
     set i [interp create]
+    
 
     set script ""
-    append script "package require nx \n namespace import -force ::nx::* \n "
+#    append script "package require nx \n namespace import -force ::nx::* \n "
+#    append script "package require nx \n namespace import -force ::nx::* \n "
     append script "set auditVariable \"\" \n"
     append script "\n ${:story} \n"
 
-    if {[catch {set result [interp eval $i $script]} msg x]} {    
+    if {[catch {set result [safeInterpreter eval $script]} msg x]} {    
       if {[regexp {The provided code is not executable. (.+)} ${:story} _ param1]} {
         # do nothing
       } else {
@@ -62,16 +68,12 @@ Object create evaluator {
       }
 
       return "The provided code is not executable \n"
-
-
     }
- 
-
  
     if {[regexp {Given there exists an object (.+) of the type (.+)} $sentenceToEvaluate _ param1 param2]} {
       append script "$param1 info has type $param2"
 
-      catch {set result [interp eval $i $script]} msg x
+      catch {set result [safeInterpreter eval $script]} msg x
       
       if {$result == "0" || [regexp {expected class but got (.+)} $msg _ _] } {
         regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
@@ -84,7 +86,9 @@ Object create evaluator {
     if {[regexp {Given there exists an object (.+)} $sentenceToEvaluate _ param1]} {
       append script "::nsf::object::exists $param1 \n"
  
-      set result [interp eval $i $script]
+      set result [safeInterpreter eval $script]
+ 
+ 
       
       if {$result == "0"} {
         regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
@@ -97,7 +101,7 @@ Object create evaluator {
     if {[regexp {Given there exists a procedure (.+) for the object (.+)} $sentenceToEvaluate _ param1 param2]} {
       append script "$param2 info method exists $param1"
       
-      catch {set result [interp eval $i $script]} msg x
+      catch {set result [safeInterpreter eval $script]} msg x
 
       if {$result == "0" || [regexp {invalid command name (.+)} $msg _ _] } {
         regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
@@ -110,7 +114,7 @@ Object create evaluator {
     if {[regexp {Given there exists a procedure (.+) for the class (.+)} $sentenceToEvaluate _ param1 param2]} {
       append script "$param2 ?class? info method exists $param1"
 
-      catch {set result [interp eval $i $script]} msg x
+      catch {set result [safeInterpreter eval $script]} msg x
     
       if {$result == "0"} {
         regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
@@ -122,7 +126,7 @@ Object create evaluator {
     if {[regexp {Given there exists a procedure (.+) with the parameter (.+)} $sentenceToEvaluate _ param1 param2]} {
       append script "set x \[$param1 $param2]"
   
-      if {[catch {set result [interp eval $i $script]} msg x]} {
+      if {[catch {set result [safeInterpreter eval $script]} msg x]} {
         if {[regexp {wrong # args: should be (.+)} $msg _ _]} {
           regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
           return "Failed: $sentence \n"
@@ -134,7 +138,7 @@ Object create evaluator {
     if {[regexp {Given there exists a procedure (.+)} $sentenceToEvaluate _ param1]} {
       append script "$param1"
   
-      if {[catch {set result [interp eval $i $script]} msg x]} {
+      if {[catch {set result [safeInterpreter eval $script]} msg x]} {
         if {$msg == "invalid command name \"$param1\""} {
           regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
           return "Failed: $sentence \n"
@@ -147,7 +151,7 @@ Object create evaluator {
       append script "if {$$param1 != $param2} {append auditVariable \"failed\"}"
       append script "\n return \$auditVariable"
  
-      set result [interp eval $i $script]
+      set result [safeInterpreter eval $script]
         
       if {$result == "failed"} {
         regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
@@ -160,7 +164,7 @@ Object create evaluator {
       append script "if {\[$param1\] != $param2} {append auditVariable \"failed\"}"
       append script "\n return \$auditVariable"
  
-      set result [interp eval $i $script]
+      set result [safeInterpreter eval $script]
     
       if {$result == "failed"} {
         regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
@@ -172,7 +176,7 @@ Object create evaluator {
     if {[regexp {When the procedure (.+) is called, the program does not terminate.} $sentenceToEvaluate _ param1]} {
       append script "$param1"
   
-      if {[catch {set result [interp eval $i $script]} msg x]} {
+      if {[catch {set result [safeInterpreter eval $script]} msg x]} {
         if {[regexp {too many nested evaluations (.+)} $msg _ _]} {
           regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
           return "Failed: $sentence \n"

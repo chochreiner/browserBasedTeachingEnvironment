@@ -1,7 +1,8 @@
-package req nx::test
+#package req nx::test
 
 nx::Class create SafeInterp {
   
+
   :property requiredPackages:0..*
   :variable interp
 
@@ -47,10 +48,10 @@ nx::Class create SafeInterp {
   }
 }
 
-set si [SafeInterp new]
-? {$si eval {info commands ::nsf::is}} ""
-? {$si requirePackage nsf} [list nsf 2.0b5]
-? {$si eval {::nsf::is object nx::Object}} 0
-? {$si requirePackage nx} [list nx 2.0b5]
-? {$si eval {::nsf::is object nx::Object}} 1
-? {$si requirePackage nx 2.0b4} "Could not find package nx in version 2.0b4"
+#set si [SafeInterp new]
+#? {$si eval {info commands ::nsf::is}} ""
+#? {$si requirePackage nsf} [list nsf 2.0b5]
+#? {$si eval {::nsf::is object nx::Object}} 0
+#? {$si requirePackage nx} [list nx 2.0b5]
+#? {$si eval {::nsf::is object nx::Object}} 1
+#? {$si requirePackage nx 2.0b4} "Could not find package nx in version 2.0b4"

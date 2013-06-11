@@ -30,7 +30,7 @@ Httpd instproc accept {socket ipaddr port} {
 }
 
 xotcl::Class Httpd::Wrk -parameter {socket port ipaddr}
-Httpd::Wrk array set codes { 200 "Data follows" 206 "Data follows part 1" 404 "Not Found" }
+Httpd::Wrk array set codes { 200 "Data follows" 206 "Data follows part 1" 404 "Not Found" 400 "maeh"}
 Httpd::Wrk instproc Date secs {clock format $secs -format {%a, %d %b %Y %T %Z}}
 Httpd::Wrk instproc close {} {		
   puts stderr "[self] [self proc] [my socket] "
@@ -124,28 +124,23 @@ Httpd::Wrk instproc response-POST {} {
    my close
   }
 
-
-  # FIXME
-  puts stderr PATH=$path
   if {$path=="/execute"} {
    set script $requestBody
-    #concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"
-    set script {package req nx;}
-   set i [interp create -safe]
-   my replyCode 200
-   interp alias $i puts {} my handlereturn $i  
-   if {[catch {set result [interp eval $i $script]} msg x]} {
-     set result "Errormessage: $msg \n\n"
-     append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
-     append result "on line: [dict get $x -errorline] \n\n"
+    #concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"    
+   SafeInterp create safeInterpreter
+   safeInterpreter requirePackage {nsf}
+   safeInterpreter requirePackage {nx}
+
+   my replyCode 200
+   if {[catch {set result [safeInterpreter eval $script]} msg x]} {
+     set result "Errormessage: $msg \n\n"
+     append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
+     append result "on line: [dict get $x -errorline] \n\n"
      puts stderr result=$result
-   }
-   my sendDynamicString $result
+   }
+   my sendDynamicString $result
    my close
   }
-
-
-#  my close
 }
 
 Httpd::Wrk instproc handlereturn {i args} {
