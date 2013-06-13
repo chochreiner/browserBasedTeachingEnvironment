@@ -47,5 +47,5 @@ objectB object method bar { } {
 # When the procedure foo of the object objectA is called then the procedure bar of the object objectB is called.
 
 
-set result [objectA foo ]
+set :result [objectA foo ]
 
