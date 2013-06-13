@@ -1,4 +1,7 @@
-# Description:
+# The provided code is not executable. 
+ # ::objectA: method name ':public' must not start with a colon 
+ 
+  # Description:
 #In this example you will create objects and procedures and you will execute them.
 
 #Task 1:
@@ -7,8 +10,8 @@
 # Given there exists an object objectA.
 # Given there exists an object objectB.
 
-Object create objectA
-Object create objectB
+nx::Object create objectA
+nx::Object create objectB
 
 #Task 2:
 #Define the instance-variables *refA* for *objectB* and *refB* for *objectA* and assign *objectA* to *refA* and *objectB* to *refB*.
@@ -28,12 +31,11 @@ objectB eval {set :refA objectA}
 # Given there exists a procedure foo for the object objectA.
 # Given there exists a procedure bar for the object objectB.
 
-objectA :public method foo {} {
-  my instvar refB
-  set :x [$refB bar]
+objectA object method foo { } {
+  set :x [${:refB} bar]
 }
 
-objectB :public  bar {} {
+objectB object method bar { } {
   set :x "foobar"
 }
 
@@ -41,9 +43,9 @@ objectB :public  bar {} {
 #Task 4:
 #Execute the procedure foo of objectA and store the returnvalue to the variable result.
 
-
 # When the procedure foo of the object objectA is called then foobar is returned.
 # When the procedure foo of the object objectA is called then the procedure bar of the object objectB is called.
 
-set result [objectA foo]
+
+set result [objectA foo ]
 

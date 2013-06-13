@@ -1,0 +1,8 @@
+if {[regexp {Given there exists an object (.+)} $sentenceToEvaluate _ param1]} 
+append script "::nsf::object::exists $param1 \n";
+if {$result == "0"} 
+
+if {[regexp {Given there exists an object (.+)} $sentenceToEvaluate _ param1]} 
+append script "::nsf::object::exists $param1 \n"; 
+if {$result == "0"}
+

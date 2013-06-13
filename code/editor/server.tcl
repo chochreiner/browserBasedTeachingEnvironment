@@ -120,6 +120,30 @@ Httpd::Wrk instproc response-POST {} {
 
   if {$path == "/validate"} {
    my replyCode 200
+   
+   set fp [open "validators.txt" r]
+   set file_data [read $fp]
+   close $fp
+   set data [split $file_data "\n"]
+   set counter 0
+
+   foreach line $data {
+     if {$counter=="0"} {
+       set needle $line
+     }
+     if {$counter==1} {
+       set code $line
+     }
+     if {$counter==2} {
+       evaluator registerValidator $needle $code $line
+     }
+     if {$counter==3} {
+       set $counter 0
+     }
+     incr counter 1
+   }
+      
+   evaluator iterateOverValidators
    my sendDynamicString [evaluator evaluateSentences $requestBody]
    my close
   }

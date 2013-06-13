@@ -3,12 +3,96 @@ namespace import -force ::nx::*
 
 source [file join [file dirname [info script]] safe.tcl]
 
+#Notes
+#why do i also require the nsf package?
+
+
+Class create Tupel {
+  :property {prefix member}
+  :property -accessor public needle
+  :property -accessor public code
+  :property -accessor public result
+}
+
+
+#Tupel create t1 -needle 0 -code 1
+
+#puts [t1 needle]
 
 Object create evaluator {
   #strictStory = only evaluate the next sentence, iff the current sentence is valid
   :object variable strictStory {}
   :object variable terminateFlag {}
   :object variable story {}
+  :object property -incremental {validators:0..n {}}
+  :object variable counter 0
+
+  :public object method registerValidator {needle code result} {
+    set validator [Tupel create ${:counter} -needle $needle -code $code -result $result]
+    incr :counter 1
+    :validators add $validator end 
+  }
+  
+  :public object method iterateOverValidators {} {  
+     foreach validator ${:validators} {
+       :evaluatefancy [$validator needle] [$validator code] [$validator result] "TODOreplace"
+     }
+  }
+  
+   :object method evaluatefancy {needle code result sentenceToEvaluate} {
+     SafeInterp create safeInterpreter
+     safeInterpreter requirePackage {nsf}
+     safeInterpreter requirePackage {nx}
+
+     set regexScript "${:story} \n"
+     append regexScript "\n set sentenceToEvaluate $sentenceToEvaluate \n"
+     append regexScript "\ set param1 \"\" \n"
+     append regexScript "\ set param2 \"\" \n"
+     append regexScript "\ set param3 \"\" \n"          
+     append regexScript "\n $needle"
+     append regexScript "\{set x \"fail\" \} else \{set x \"ok|\$param1|\$param2|\$param3\"\}"
+     
+     set regexResult [safeInterpreter eval $regexScript]
+
+     if {$regexResult == "fail"} {
+       return
+     }
+     
+     set validationScript "${:story} \n"
+     set data [split $regexResult "|"]
+     set counter 0
+   
+     foreach line $data {
+       if {$counter=="0"} {
+       }
+       if {$counter==1} {
+         append validationScript "\n set param1 $line \n"
+       }
+       if {$counter==2} {
+         append validationScript "\n set param2 $line \n"
+       }
+       if {$counter==3} {
+         append validationScript "\n set param3 $line \n"
+       }
+       incr counter 1
+     }
+
+     append validationScript "\n set sentenceToEvaluate $sentenceToEvaluate \n"
+     append validationScript "\n $code \n"
+     
+     set validatorResult [safeInterpreter eval $validationScript]
+     
+     set returnValueScript "${:story} \n"
+     append returnValueScript "\n set result $validatorResult \n"
+     append returnValueScript "\n $result "
+     append returnValueScript "\{set x \"fail\" \} else \{set x \"ok\"\}"
+
+     if {[safeInterpreter eval $returnValueScript] == "fail"} {
+        regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
+        return "Failed: $sentence \n"  
+     }
+
+  }
 
   :object method andCase {sentence} {
     set subSentences [split $sentence "&"]
@@ -50,13 +134,8 @@ Object create evaluator {
    SafeInterp create safeInterpreter
    safeInterpreter requirePackage {nsf}
    safeInterpreter requirePackage {nx}
-    
-    set i [interp create]
-    
-
+        
     set script ""
-#    append script "package require nx \n namespace import -force ::nx::* \n "
-#    append script "package require nx \n namespace import -force ::nx::* \n "
     append script "set auditVariable \"\" \n"
     append script "\n ${:story} \n"
 
@@ -87,9 +166,7 @@ Object create evaluator {
       append script "::nsf::object::exists $param1 \n"
  
       set result [safeInterpreter eval $script]
- 
- 
-      
+
       if {$result == "0"} {
         regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
         return "Failed: $sentence \n"  
