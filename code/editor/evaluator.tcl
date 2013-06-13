@@ -27,6 +27,30 @@ Object create evaluator {
   :object property -incremental {validators:0..n {}}
   :object variable counter 0
 
+  : public object method init {} {
+   set fp [open "validators.txt" r]
+   set file_data [read $fp]
+   close $fp
+   set data [split $file_data "\n"]
+   set counter 0
+
+   foreach line $data {
+     if {$counter=="0"} {
+       set needle $line
+     }
+     if {$counter==1} {
+       set code $line
+     }
+     if {$counter==2} {
+       :registerValidator $needle $code $line
+     }
+     if {$counter==3} {
+       set $counter 0
+     }
+     incr counter 1
+   }
+  }
+
   :public object method registerValidator {needle code result} {
     set validator [Tupel create ${:counter} -needle $needle -code $code -result $result]
     incr :counter 1
