@@ -164,13 +164,8 @@ Object create evaluator {
     append script "\n ${:story} \n"
 
     if {[catch {set result [safeInterpreter eval $script]} msg x]} {    
-      if {[regexp {The provided code is not executable. (.+)} ${:story} _ param1]} {
-        # do nothing
-      } else {
-        set :story "\#fff The provided code is not executable. \n \# $msg \n \n  ${:story}"     
-      }
-
-      return "The provided code is not executable \n"
+      # the notification is already displayed below
+      return 
     }
  
     if {[regexp {Given there exists an object (.+) of the type (.+)} $sentenceToEvaluate _ param1 param2]} {
