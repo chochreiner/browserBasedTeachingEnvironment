@@ -6,7 +6,7 @@
 
 # Given there exists a class Stack.
 # Given there exists a procedure push for the class Stack.
-# Given there exists a procedure pull for the class Stack.
+# Given there exists a procedure pop for the class Stack.
 # Given there exists a procedure size for the class Stack.
 
 nx::Class create Stack {
@@ -38,6 +38,7 @@ nx::Class create Stack {
 # Task 2:
 # Create a instance of *Stack* named *stack* and push the three characters *a*, *b*, *c* onto the stack.
 
+# Given that stack is an instance of the class Stack.
 # When the procedure size of the instance stack is called, then 3 is returned.
 # When the procedure pop of the instance stack is called, then c is returned.
 # When the procedure pop of the instance stack is called, then b is returned.

@@ -40,8 +40,8 @@ objectB public object method bar { } {
 #Task 4:
 #Execute the procedure foo of objectA and store the returnvalue to the variable result.
 
-# When the procedure foo of the object objectA is called then foobar is returned.
-# When the procedure foo of the object objectA is called then the procedure bar of the object objectB is called.
+# When the procedure foo of the object objectA is called, then foobar is returned.
+# When the procedure foo of the object objectA is called, then the procedure bar of the object objectB is called.
 
 
 set :result [objectA foo ]

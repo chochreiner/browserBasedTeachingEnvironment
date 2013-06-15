@@ -88,6 +88,8 @@ nx::Class create ExerciseBuilder {
     if {[info exists :testScriptBehavioral]} {
       foreach cmd ${:testScriptBehavioral} {
         safeInterpreter eval $cmd
+      puts $cmd
+
       }
     }
     set outcome [:generateFeedback [safeInterpreter eval {return $outcome}] $scriptUnderTest]    
@@ -118,9 +120,12 @@ nx::Class create ExerciseBuilder {
 ExerciseBuilder Given {there exists an object (.+)} {::nsf::object::exists $0}
 ExerciseBuilder Given {there exists a variable (.+) in the object (.+)} {$1 eval {info exists :$0}}
 ExerciseBuilder Given {there exists a procedure (.+) for the object (.+)} {$1 info object method exists $0}
+ExerciseBuilder Given {there exists a procedure (.+) for the class (.+)} {$1 info method exists $0}
+ExerciseBuilder Given {that (.+) is an instance of the class (.+)} {$0 info has type $1}
 
 
-ExerciseBuilder When {the procedure (.+) of the object (.+) is called then (.+) is returned} {if {[$1 $0] != "$2"} {set x 0} else {set x 1} }
 
 
-
+ExerciseBuilder When {the procedure (.+) of the object (.+) is called, then (.+) is returned} {if {[$1 $0] != "$2"} {set x 0} else {set x 1} }
+ExerciseBuilder When {the parametrized-procedure (.+) of the instance (.+) with the parameter (.+) is called, then (.+) is returned} {if {[$1 $0 $2] != "$3"} {set x 0} else {set x 1} }
+ExerciseBuilder When {the procedure (.+) of the instance (.+) is called, then (.+) is returned} {if {[$1 $0] != "$2"} {set x 0} else {set x 1} }
