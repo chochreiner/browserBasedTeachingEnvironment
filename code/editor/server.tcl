@@ -7,7 +7,6 @@ namespace import -force ::nx::*
 array set opt {-port 8081 -root ./}
 array set opt $argv
 
-source [file join [file dirname [info script]] evaluator.tcl]
 source [file join [file dirname [info script]] exercise.tcl]
 
 

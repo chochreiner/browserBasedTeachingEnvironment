@@ -1,6 +1,9 @@
 package require nx
 namespace import -force ::nx::*
 
+package require nx::test
+
+
 source [file join [file dirname [info script]] safe.tcl]
 
 #Notes

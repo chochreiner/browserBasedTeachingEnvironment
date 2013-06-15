@@ -1,6 +1,9 @@
 package require nx
 namespace import -force ::nx::*
 
+package req nx::test
+
+
 source [file join [file dirname [info script]] safe.tcl]
 
 nx::Class create ExerciseBuilder {
