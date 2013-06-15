@@ -95,6 +95,10 @@ color: #AE81FF\
 color: #F8F8F0;\
 background-color: #F92672\
 }\
+.ace-monokai .ace_valid {\
+color: #F8F8F0;\
+background-color: #006400\
+}\
 .ace-monokai .ace_invalid.ace_deprecated {\
 color: #F8F8F0;\
 background-color: #AE81FF\

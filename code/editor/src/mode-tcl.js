@@ -147,8 +147,11 @@ var TclHighlightRules = function() {
 
     this.$rules = {
         "start" : [
-           {    token : "invalid",
+            {   token : "invalid",
                 regex : "#fff.*$",
+            }, {
+                token : "valid",
+                regex : "#ooo.*$",
             }, {
                 token : "comment",
                 regex : "#.*\\\\$",
@@ -200,9 +203,11 @@ var TclHighlightRules = function() {
             }
         ],
         "commandItem" : [
-            {
-                token : "invalid",
+            {   token : "invalid",
                 regex : "#fff.*$",
+            }, {
+                token : "valid",
+                regex : "#ooo.*$",
             }, {
                 token : "comment",
                 regex : "#.*\\\\$",
