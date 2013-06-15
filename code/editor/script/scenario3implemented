@@ -43,7 +43,7 @@ nx::Class create Stack {
 # When the procedure pop of the instance stack is called, then c is returned.
 # When the procedure pop of the instance stack is called, then b is returned.
 # When the procedure size of the instance stack is called, then 1 is returned.
-# When the procedure push of the instance stack with the parameter d is called, then d is returned.
+# When the parametrized-procedure push of the instance stack with the parameter d is called, then d is returned.
 
 Stack create stack
 stack push a

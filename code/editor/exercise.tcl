@@ -88,8 +88,6 @@ nx::Class create ExerciseBuilder {
     if {[info exists :testScriptBehavioral]} {
       foreach cmd ${:testScriptBehavioral} {
         safeInterpreter eval $cmd
-      puts $cmd
-
       }
     }
     set outcome [:generateFeedback [safeInterpreter eval {return $outcome}] $scriptUnderTest]    
@@ -116,6 +114,23 @@ nx::Class create ExerciseBuilder {
   }
 }
 
+#TODO find a checking solution without trying to create an instance of the class and see how it works
+ExerciseBuilder Given {there exists a class (.+)} {set x 0}
+
+#TODO replace with potentially easier structure like for objects
+#ExerciseBuilder Given {there exists a variable (.+) in the class (.+)} {if {[string length [$1 info variables $0]] < 1}  {set x 0} else {set x 1} }
+ExerciseBuilder Given {there exists a variable (.+) in the class (.+)} {set x 0}
+
+#TODO find a construct to check this
+ExerciseBuilder Given {that the instance (.+) is assigned to variable (.+) in the instance (.+)} {set x 0}
+
+#TODO find an endless-loop detection
+ExerciseBuilder When {the procedure (.+) of the instance (.+) is called, the program does not terminate} {set x 0}
+
+#TODO find callstack solution
+ExerciseBuilder When {the procedure (.+) of the instance (.+) is called, then the procedure (.+) of the instance (.+) is called} {set x 0}
+ExerciseBuilder When {the procedure (.+) of the object (.+) is called, then the procedure (.+) of the object (.+) is called} {set x 0}
+
 
 ExerciseBuilder Given {there exists an object (.+)} {::nsf::object::exists $0}
 ExerciseBuilder Given {there exists a variable (.+) in the object (.+)} {$1 eval {info exists :$0}}
@@ -124,8 +139,7 @@ ExerciseBuilder Given {there exists a procedure (.+) for the class (.+)} {$1 inf
 ExerciseBuilder Given {that (.+) is an instance of the class (.+)} {$0 info has type $1}
 
 
-
-
 ExerciseBuilder When {the procedure (.+) of the object (.+) is called, then (.+) is returned} {if {[$1 $0] != "$2"} {set x 0} else {set x 1} }
 ExerciseBuilder When {the parametrized-procedure (.+) of the instance (.+) with the parameter (.+) is called, then (.+) is returned} {if {[$1 $0 $2] != "$3"} {set x 0} else {set x 1} }
 ExerciseBuilder When {the procedure (.+) of the instance (.+) is called, then (.+) is returned} {if {[$1 $0] != "$2"} {set x 0} else {set x 1} }
+

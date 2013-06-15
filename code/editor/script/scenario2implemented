@@ -5,7 +5,7 @@
 # Task 1:
 # Define a class named *C* that takes one parameter and has one variable named *ref*.
 
-# Given there exists a class C that takes one parameter.
+# Given there exists a class C.
 # Given there exists a variable ref in the class C. 
 
 nx::Class create C {
@@ -16,7 +16,7 @@ nx::Class create C {
     if {${:already_called}==0} {
     set :already_called 1
     ${:ref} foo
-    puts "called"
+    return "called"
     }
   }
 }
@@ -31,10 +31,10 @@ nx::Class create C {
 # Task 3:
 #Create two instances of the class *C* (*instanceA* and *instanceB*) and assign *instanceA* to the variable *ref* in *instanceB* and assign *instanceB* to the variable *ref* in *instanceA*.
 
-# Given there exists an object instanceA of the type C.
-# Given there exists an object instanceB of the type C.
-# Given that the object instanceB is assigned to variable ref in the object instanceA.
-# Given that the object instanceA is assigned to variable ref in the object instanceB.
+# Given that instanceA is an instance of the class C.
+# Given that instanceB is an instance of the class C.
+# Given that the instance instanceB is assigned to variable ref in the instance instanceA.
+# Given that the instance instanceA is assigned to variable ref in the instance instanceB.
 
 C create instanceA
 C create instanceB
@@ -49,7 +49,7 @@ instanceB eval {set :already_called 0}
 # Task 4:
 # Execute the procedure *foo* of *instanceA*.
 
-# When the procedure foo of the object instanceA is called, the program does not terminate.
+# When the procedure foo of the instance instanceA is called, the program does not terminate.
 
 instanceA foo
 

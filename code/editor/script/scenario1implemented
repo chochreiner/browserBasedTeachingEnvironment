@@ -5,7 +5,7 @@
 #Define the objects named *objectA* and *objectB*.
 
 # Given there exists an object objectA.
-# Given there exists an object objectC.
+# Given there exists an object objectB.
 
 nx::Object create objectA
 nx::Object create objectB
