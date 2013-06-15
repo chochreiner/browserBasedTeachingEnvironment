@@ -8,6 +8,8 @@ array set opt {-port 8081 -root ./}
 array set opt $argv
 
 source [file join [file dirname [info script]] evaluator.tcl]
+source [file join [file dirname [info script]] exercise.tcl]
+
 
 xotcl::Class Httpd -parameter { 
   {port 80} 
@@ -121,9 +123,13 @@ Httpd::Wrk instproc response-POST {} {
   if {$path == "/validate"} {
    my replyCode 200
    
-   evaluator init      
-   evaluator iterateOverValidators
-   my sendDynamicString [evaluator evaluateSentences $requestBody]
+   set e [ExerciseBuilder new]
+   $e setUp $requestBody
+   my sendDynamicString [$e run $requestBody]
+   
+#   evaluator init      
+#   evaluator iterateOverValidators
+#   my sendDynamicString [evaluator evaluateSentences $requestBody]
    my close
   }
 
