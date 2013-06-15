@@ -46,8 +46,6 @@ nx::Class create SafeInterp {
   :public method eval {script} {
     ${:interp} eval $script
   }
-
-  
 }
 
 #set si [SafeInterp new]
