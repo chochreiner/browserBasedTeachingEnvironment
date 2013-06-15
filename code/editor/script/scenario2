@@ -1,0 +1,36 @@
+# Description:
+# In this example you will create a class *C* that takes one parameter and has one variable as well as a procedure *foo*.
+# You will create instances of this class and learn how to avoid endless loops, while calling methods of two syntactic indetical instances.
+
+# Task 1:
+# Define a class named *C* that takes one parameter and has one variable named *ref*.
+
+# Given there exists a class C that takes one parameter.
+# Given there exists a variable ref in the class C. 
+
+
+# Task 2:
+# Define the procedure *foo* of the class *C* that calls again a procedure *foo* of an instance of the class *C* and prints the string *called*.
+
+
+# Given there exists a procedure foo for the class C.
+
+# Task 3:
+#Create two instances of the class *C* (*instanceA* and *instanceB*) and assign *instanceA* to the variable *ref* in *instanceB* and assign *instanceB* to the variable *ref* in *instanceA*.
+
+
+# Given there exists an object instanceA of the type C.
+# Given there exists an object instanceB of the type C.
+# Given that the object instanceB is assigned to variable ref in the object instanceA.
+# Given that the object instanceA is assigned to variable ref in the object instanceB.
+
+# Task 4:
+# Execute the procedure *foo* of *instanceA*.
+
+# When the procedure foo of the object instanceA is called, the program does not terminate.
+
+# Task 5:
+# Introduce a mechanism that stopps the endless loop and ensures that the method foo only prints the string *called* twice.
+
+
+

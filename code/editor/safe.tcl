@@ -2,7 +2,6 @@
 
 nx::Class create SafeInterp {
   
-
   :property requiredPackages:0..*
   :variable interp
 
@@ -43,9 +42,12 @@ nx::Class create SafeInterp {
     interp hide ${:interp} source
     return [list $pkgName $foundVersion]
   }
+  
   :public method eval {script} {
     ${:interp} eval $script
   }
+
+  
 }
 
 #set si [SafeInterp new]

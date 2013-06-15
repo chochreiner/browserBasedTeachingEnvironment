@@ -180,31 +180,7 @@ Object create evaluator {
       return
     }  
  
- 
-    if {[regexp {Given there exists an object (.+)} $sentenceToEvaluate _ param1]} {
-      append script "::nsf::object::exists $param1 \n"
- 
-      set result [safeInterpreter eval $script]
 
-      if {$result == "0"} {
-        regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
-        return "Failed: $sentence \n"  
-      }
-      
-      return
-    }  
- 
-    if {[regexp {Given there exists a procedure (.+) for the object (.+)} $sentenceToEvaluate _ param1 param2]} {
-      append script "$param2 info method exists $param1"
-      
-      catch {set result [safeInterpreter eval $script]} msg x
-
-      if {$result == "0" || [regexp {invalid command name (.+)} $msg _ _] } {
-        regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
-        return "Failed: $sentence \n"  
-      }
-      return
-    }  
 
     #FIXME what are the return possibilities of the this method call? also 0/1
     if {[regexp {Given there exists a procedure (.+) for the class (.+)} $sentenceToEvaluate _ param1 param2]} {
@@ -231,18 +207,7 @@ Object create evaluator {
       return    
     }
 
-    if {[regexp {Given there exists a procedure (.+)} $sentenceToEvaluate _ param1]} {
-      append script "$param1"
-  
-      if {[catch {set result [safeInterpreter eval $script]} msg x]} {
-        if {$msg == "invalid command name \"$param1\""} {
-          regsub -all $sentenceToEvaluate ${:story} "\#fff $sentenceToEvaluate" :story
-          return "Failed: $sentence \n"
-        }
-      }
-      return    
-    }
-  
+
     if {[regexp {Given that the variable (.+) is assigned to the value (.+)} $sentenceToEvaluate _ param1 param2]} {
       append script "if {$$param1 != $param2} {append auditVariable \"failed\"}"
       append script "\n return \$auditVariable"

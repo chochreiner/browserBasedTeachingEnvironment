@@ -135,7 +135,6 @@ Httpd::Wrk instproc response-POST {} {
 
   if {$path=="/execute"} {
    set script $requestBody
-    #concat "set asdfghjkl \"\"" script "\n return \$asdfghjkl"    
    SafeInterp create safeInterpreter
    safeInterpreter requirePackage {nsf}
    safeInterpreter requirePackage {nx}
