@@ -50,7 +50,7 @@ nx::Class create ExerciseBuilder {
         lassign $given regExpr script
         lassign $regExpr r vars
         if {[regexp $r $string _ {*}$vars]} {
-	      lappend :testScriptStructural [list if !\[[subst $script]\] [list lappend failures "Given $string"]]
+	      lappend :testScriptStructural [list if !\[[subst $script]\] [list lappend outcome "F: Given $string"] [list lappend outcome "S: Given $string"]]
         }
       }
     }
@@ -63,7 +63,7 @@ nx::Class create ExerciseBuilder {
         lassign $given regExpr script
         lassign $regExpr r vars
         if {[regexp $r $string _ {*}$vars]} {
-  	      lappend :testScriptBehavioral [list if !\[[subst -nocommands $script]\] [list lappend failures "When $string"]]
+  	      lappend :testScriptBehavioral [list if !\[[subst -nocommands $script]\] [list lappend outcome "F: When $string"] [list lappend outcome "S: When $string"]]
         }
       }
     }  
@@ -75,37 +75,42 @@ nx::Class create ExerciseBuilder {
     safeInterpreter requirePackage {nx}
         
     safeInterpreter eval $scriptUnderTest
-    safeInterpreter eval {set failures ""}
+    safeInterpreter eval {set outcome ""}
+
+    set outcome {}
 
     if {[info exists :testScriptStructural]} {
       foreach cmd ${:testScriptStructural} {
-        safeInterpreter eval $cmd
+        if {[catch {set result [safeInterpreter eval $cmd]} msg x]} {
+          puts $msg #executionfailure        
+        }
+        set outcome [:generateFeedback [safeInterpreter eval {return $outcome}] $scriptUnderTest]
       }
     }
 
     if {[info exists :testScriptBehavioral]} {
       foreach cmd ${:testScriptBehavioral} {
-        safeInterpreter eval $cmd
+        if {[catch {set result [safeInterpreter eval $cmd]} msg x]} {
+          puts $msg #executionfailure        
+        }
+        set outcome [:generateFeedback [safeInterpreter eval {return $outcome}] $scriptUnderTest]
       }
-    }
-    
-    return [:generateFeedback [safeInterpreter eval {return $failures}] $scriptUnderTest]
+    }    
+    return $outcome
   }
   
-  :method generateFeedback {errors story} {
-    #clear all previous feedback information
-    regsub -all {#ooo} $story "ooo" story
-    regsub -all {#fff} $story "fff" story
-  
-    foreach failure $errors {
-      regsub -all $failure $story "\#fff $failure" story
-    }
-
-    set lines [split $story "\n"]  
+  :method generateFeedback {outcome story} {
+    regsub -all {#ooo} $story {#} story
+    regsub -all {#fff} $story {#} story
     
-    foreach line $lines {    
-      regsub -all {# Given} $story {#ooo Given} story
-      regsub -all {# When} $story {#ooo When} story      
+    foreach result $outcome {
+      if {[regexp {F: } $result _ _]} {
+        regsub -all {F: } $result {} result
+        regsub -all $result $story "\#fff $result" story
+      } else {
+        regsub -all {S: } $result {} result
+        regsub -all $result $story "\#ooo $result" story      
+      }    
     }
 
     regsub -all {# #} $story "#" story
@@ -116,7 +121,11 @@ nx::Class create ExerciseBuilder {
 
 
 ExerciseBuilder Given {there exists an object (.+)} {::nsf::object::exists $0}
-ExerciseBuilder When {the procedure (.+) is called, (.+) is returned} {if {[$0] != "$1"} {set x 0} else {set x 1} }
+ExerciseBuilder Given {there exists a variable (.+) in the object (.+)} {$1 eval {info exists :$0}}
+ExerciseBuilder Given {there exists a procedure (.+) for the object (.+)} {$1 info object method exists $0}
+
+
+ExerciseBuilder When {the procedure (.+) of the object (.+) is called then (.+) is returned} {if {[$1 $0] != "$2"} {set x 0} else {set x 1} }
 
 
 
