@@ -17,7 +17,7 @@ nx::Object create objectB
 #Define the instance-variables *refA* for *objectB* and *refB* for *objectA* and assign *objectA* to *refA* and *objectB* to *refB*.
 
 # Given there exists a variable refB in the object objectA.
-# Given there exists a variable refA*in the object objectB.
+# Given there exists a variable refA in the object objectB.
 
 objectA eval {set :refB objectB}
 objectB eval {set :refA objectA}
@@ -31,11 +31,11 @@ objectB eval {set :refA objectA}
 # Given there exists a procedure foo for the object objectA.
 # Given there exists a procedure bar for the object objectB.
 
-objectA object method foo { } {
+objectA public object method foo { } {
   set :x [${:refB} bar]
 }
 
-objectB object method bar { } {
+objectB public object method bar { } {
   set :x "foobar"
 }
 
