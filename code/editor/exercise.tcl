@@ -81,7 +81,7 @@ nx::Class create ExerciseBuilder {
 
     if {[info exists :testScriptStructural]} {
       foreach cmd ${:testScriptStructural} {
-        safeInterpreter eval $cmd
+        safeInterpreter eval $cmd        
       }
     }
 
@@ -89,7 +89,8 @@ nx::Class create ExerciseBuilder {
       foreach cmd ${:testScriptBehavioral} {
         safeInterpreter eval $cmd
       }
-    }    
+    }
+    set outcome [:generateFeedback [safeInterpreter eval {return $outcome}] $scriptUnderTest]    
     return $outcome
   }
   
