@@ -103,10 +103,10 @@ nx::Class create ExerciseBuilder {
     foreach result $outcome {
       if {[regexp {F: } $result _ _]} {
         regsub -all {F: } $result {} result
-        regsub -all $result $story "\#fff $result" story
+        regsub -all $result $story "\#fail $result" story
       } else {
         regsub -all {S: } $result {} result
-        regsub -all $result $story "\#ooo $result" story      
+        regsub -all $result $story "\#ok $result" story      
       }    
     }
 
