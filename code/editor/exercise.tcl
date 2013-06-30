@@ -1,8 +1,6 @@
 package require nx
 namespace import -force ::nx::*
 
-
-
 source [file join [file dirname [info script]] safe.tcl]
 
 nx::Class create ExerciseBuilder {
@@ -97,8 +95,8 @@ nx::Class create ExerciseBuilder {
   }
   
   :method generateFeedback {outcome story} {
-    regsub -all {#ooo} $story {#} story
-    regsub -all {#fff} $story {#} story
+    regsub -all {#ok} $story {#} story
+    regsub -all {#fail} $story {#} story
     
     foreach result $outcome {
       if {[regexp {F: } $result _ _]} {

@@ -7,7 +7,12 @@ nx::Class create SafeInterp {
 
   :method init {} {
     set :interp [interp create -safe]
-    # TODO: hide unneeded commands in safe interp, see [interp] doc
+    interp hide ${:interp} tell
+    interp hide ${:interp} pid
+    interp hide ${:interp} gets
+    interp hide ${:interp} update
+    interp hide ${:interp} vwait
+    interp hide ${:interp} fileevent
   }
 
   :method getIfneededScript {pkgName pkgVersion:optional} {
@@ -34,7 +39,6 @@ nx::Class create SafeInterp {
 
   :public method requirePackage {pkgName pkgVersion:optional} {
     lassign [:getIfneededScript {*}[current args]] script foundVersion
-    # TODO: make sure that package are only required once
     interp expose ${:interp} load
     interp expose ${:interp} source
     :eval $script
