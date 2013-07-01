@@ -6,6 +6,8 @@ source [file join [file dirname [info script]] safe.tcl]
 nx::Class create TaskEvaluator {
 
   :property {steps {[dict create]}}
+  # if set mode is 0, the validation aborts if one assertion is wrong
+  :variable strictMode 0
 
   :public method setUp {story} {
     set lines [split $story "\n"]  
@@ -81,13 +83,25 @@ nx::Class create TaskEvaluator {
 
     if {[info exists :testScriptStructural]} {
       foreach cmd ${:testScriptStructural} {
-        safeInterpreter eval $cmd        
+        if {${:strictMode}=="0"} {
+          safeInterpreter eval $cmd                        
+        } else {
+          if {![regexp {F: } [safeInterpreter eval {return $outcome}] _ _]} {
+            safeInterpreter eval $cmd 
+          }
+        }
       }
     }
 
     if {[info exists :testScriptBehavioral]} {
       foreach cmd ${:testScriptBehavioral} {
-        safeInterpreter eval $cmd
+        if {${:strictMode}=="0"} {
+          safeInterpreter eval $cmd                        
+        } else {
+          if {![regexp {F: } [safeInterpreter eval {return $outcome}] _ _]} {
+            safeInterpreter eval $cmd 
+          }
+        }
       }
     }
     set outcome [:generateFeedback [safeInterpreter eval {return $outcome}] $scriptUnderTest]    
@@ -111,6 +125,14 @@ nx::Class create TaskEvaluator {
     regsub -all {# #} $story "#" story
   
     return $story
+  }
+  
+  :public method enableStrictMode {} {
+    set :strictMode 1
+  }
+  
+  :public method disableStrictMode {} {
+    set :strictMode 0
   }
 }
 
