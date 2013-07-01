@@ -1,17 +1,16 @@
-#package require XOTcl
-#namespace import -force ::xotcl::*
+package require XOTcl
+namespace import -force ::xotcl::*
 
 package require nx
 namespace import -force ::nx::*
 
-array set opt {-port 8081 -root ./}
+array set opt {-port 8081}
 array set opt $argv
 
 source [file join [file dirname [info script]] exercise.tcl]
 
 Class create Httpd {
   :property {port 80}
-  :property {root /home/httpd/html/}
   :variable worker Httpd::Wrk
 
   :public method init args {
@@ -33,7 +32,6 @@ Class create Httpd {
 
 #xotcl::Class Httpd -parameter { 
 #  {port 80} 
-#  {root /home/httpd/html/} 
 #  {worker Httpd::Wrk} 
 #}
 
@@ -84,7 +82,8 @@ Class create Httpd::Wrk {
   
   :public method receiveLine {line n} {
     upvar $line received $n nrBytes
-    set nrBytes [gets [:socket] received]
+    set :line $line
+    set nrBytes [gets ${:socket} received]
     puts stderr "[self] got:  <$received>"
   }
   
@@ -92,9 +91,10 @@ Class create Httpd::Wrk {
     fileevent ${:socket} $type [list [self] $method]  
   }  
 
-  :public method firstLine {} {  
+  :public method firstLine {} {
+    :receiveLine :line :n  
     if {[regexp {^(GET|POST) +([^ ]+) +HTTP/.*$} ${:line} _ :method :path]} {
-      set :fileName [[:info parent] root]/${:path}
+      set :fileName ./${:path}
       regsub {/$} ${:fileName} /index.html :fileName
       :fileevent readable header
     } else {
@@ -311,7 +311,7 @@ Class create Httpd::Wrk {
 #  my instvar method path fileName 
 #  my receiveLine line n
 #  if {[regexp {^(GET|POST) +([^ ]+) +HTTP/.*$} $line _ method path]} {
-#    set fileName [[my info parent] root]/$path  
+#    set fileName ./$path  
 #    regsub {/$} $fileName /index.html fileName
 #    my fileevent readable header
 #  } else {
@@ -504,5 +504,5 @@ proc bgerror {args} {
   puts stderr "\t$::errorInfo\nerrorCode = $::errorCode"
 }
 
-Httpd create p1 -port $opt(-port) -root $opt(-root)
+Httpd create p1 -port $opt(-port)
 vwait forever
