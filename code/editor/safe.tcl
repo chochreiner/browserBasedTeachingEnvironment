@@ -52,8 +52,12 @@ nx::Class create SafeInterp {
     interp alias ${:interp} puts {} :fancyputs
     set  :asdfghjkl ""
     append evalscript $script
-    ${:interp} eval $script
-    return ${:asdfghjkl}
+    set result [${:interp} eval $script]
+    if {[string length ${:asdfghjkl}] > 3} {
+     return ${:asdfghjkl}
+    } else {
+     return $result
+    } 
   }
   
   :method fancyputs {text} {
