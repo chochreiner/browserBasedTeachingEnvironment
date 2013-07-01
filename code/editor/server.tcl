@@ -147,7 +147,7 @@ Class create Httpd::Wrk {
   :public method response-POST {} {
     if {${:path} == "/validate"} {
       :replyCode 200
-      set e [ExerciseBuilder new]
+      set e [TaskEvaluator new]
       $e setUp $requestBody
       :sendDynamicString [$e run $requestBody]   
       :close

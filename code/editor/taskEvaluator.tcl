@@ -3,7 +3,7 @@ namespace import -force ::nx::*
 
 source [file join [file dirname [info script]] safe.tcl]
 
-nx::Class create ExerciseBuilder {
+nx::Class create TaskEvaluator {
 
   :property {steps {[dict create]}}
 
@@ -115,35 +115,35 @@ nx::Class create ExerciseBuilder {
 }
 
 #TODO find a checking solution without trying to create an instance of the class and see how it works
-ExerciseBuilder Given {there exists a class (.+)} {set x 0}
+TaskEvaluator Given {there exists a class (.+)} {set x 0}
 # if object extsts ::C class --> dann ist c vom type class
 
 
 #TODO replace with potentially easier structure like for objects
-#ExerciseBuilder Given {there exists a variable (.+) in the class (.+)} {if {[string length [$1 info variables $0]] < 1}  {set x 0} else {set x 1} }
-ExerciseBuilder Given {there exists a variable (.+) in the class (.+)} {set x 0}
+#TaskEvaluator Given {there exists a variable (.+) in the class (.+)} {if {[string length [$1 info variables $0]] < 1}  {set x 0} else {set x 1} }
+TaskEvaluator Given {there exists a variable (.+) in the class (.+)} {set x 0}
 
 #TODO find a construct to check this
-ExerciseBuilder Given {that the instance (.+) is assigned to variable (.+) in the instance (.+)} {set x 0}
+TaskEvaluator Given {that the instance (.+) is assigned to variable (.+) in the instance (.+)} {set x 0}
 # name eines objects --> dann ob das object extistiert
 
 #TODO find an endless-loop detection
-ExerciseBuilder When {the procedure (.+) of the instance (.+) is called, the program does not terminate} {set x 0}
+TaskEvaluator When {the procedure (.+) of the instance (.+) is called, the program does not terminate} {set x 0}
 # abfragen in welcher stacketiefe bin ich: callsteck level; interp (level) frame
 
 #TODO find callstack solution
-ExerciseBuilder When {the procedure (.+) of the instance (.+) is called, then the procedure (.+) of the instance (.+) is called} {set x 0}
-ExerciseBuilder When {the procedure (.+) of the object (.+) is called, then the procedure (.+) of the object (.+) is called} {set x 0}
+TaskEvaluator When {the procedure (.+) of the instance (.+) is called, then the procedure (.+) of the instance (.+) is called} {set x 0}
+TaskEvaluator When {the procedure (.+) of the object (.+) is called, then the procedure (.+) of the object (.+) is called} {set x 0}
 
 
-ExerciseBuilder Given {there exists an object (.+)} {::nsf::object::exists $0}
-ExerciseBuilder Given {there exists a variable (.+) in the object (.+)} {$1 eval {info exists :$0}}
-ExerciseBuilder Given {there exists a procedure (.+) for the object (.+)} {$1 info object method exists $0}
-ExerciseBuilder Given {there exists a procedure (.+) for the class (.+)} {$1 info method exists $0}
-ExerciseBuilder Given {that (.+) is an instance of the class (.+)} {$0 info has type $1}
+TaskEvaluator Given {there exists an object (.+)} {::nsf::object::exists $0}
+TaskEvaluator Given {there exists a variable (.+) in the object (.+)} {$1 eval {info exists :$0}}
+TaskEvaluator Given {there exists a procedure (.+) for the object (.+)} {$1 info object method exists $0}
+TaskEvaluator Given {there exists a procedure (.+) for the class (.+)} {$1 info method exists $0}
+TaskEvaluator Given {that (.+) is an instance of the class (.+)} {$0 info has type $1}
 
 
-ExerciseBuilder When {the procedure (.+) of the object (.+) is called, then (.+) is returned} {if {[$1 $0] != "$2"} {set x 0} else {set x 1} }
-ExerciseBuilder When {the parametrized-procedure (.+) of the instance (.+) with the parameter (.+) is called, then (.+) is returned} {if {[$1 $0 $2] != "$3"} {set x 0} else {set x 1} }
-ExerciseBuilder When {the procedure (.+) of the instance (.+) is called, then (.+) is returned} {if {[$1 $0] != "$2"} {set x 0} else {set x 1} }
+TaskEvaluator When {the procedure (.+) of the object (.+) is called, then (.+) is returned} {if {[$1 $0] != "$2"} {set x 0} else {set x 1} }
+TaskEvaluator When {the parametrized-procedure (.+) of the instance (.+) with the parameter (.+) is called, then (.+) is returned} {if {[$1 $0 $2] != "$3"} {set x 0} else {set x 1} }
+TaskEvaluator When {the procedure (.+) of the instance (.+) is called, then (.+) is returned} {if {[$1 $0] != "$2"} {set x 0} else {set x 1} }
 

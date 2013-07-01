@@ -7,7 +7,7 @@ namespace import -force ::nx::*
 array set opt {-port 8081 -root ./}
 array set opt $argv
 
-source [file join [file dirname [info script]] exercise.tcl]
+source [file join [file dirname [info script]] taskEvaluator.tcl]
 
 
 xotcl::Class Httpd -parameter { 
@@ -122,7 +122,7 @@ Httpd::Wrk instproc response-POST {} {
   if {$path == "/validate"} {
    my replyCode 200
    
-   set e [ExerciseBuilder new]
+   set e [TaskEvaluator new]
    $e setUp $requestBody
    my sendDynamicString [$e run $requestBody]
    
