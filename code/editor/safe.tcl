@@ -48,9 +48,24 @@ nx::Class create SafeInterp {
   }
   
   :public method eval {script} {
+    #interp share {} stdout ${:interp}
+    interp alias ${:interp} puts {} :fancyputs
+    set  :asdfghjkl ""
+    append evalscript $script
     ${:interp} eval $script
+    return ${:asdfghjkl}
   }
+  
+  :method fancyputs {text} {
+    append :asdfghjkl $text; 
+    append :asdfghjkl "\n"
+  }
+  
+
 }
+
+
+
 
 #set si [SafeInterp new]
 #? {$si eval {info commands ::nsf::is}} ""
