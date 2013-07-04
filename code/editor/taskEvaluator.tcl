@@ -138,21 +138,59 @@ nx::Class create TaskEvaluator {
   }
 }
 
-TaskEvaluator Given {there exists an object (.+)} {::nsf::object::exists $0}
-TaskEvaluator Given {there exists a variable (.+) in the object (.+)} {$1 eval {info exists :$0}}
-TaskEvaluator Given {there exists a procedure (.+) for the object (.+)} {$1 info object method exists $0}
-TaskEvaluator Given {there exists a procedure (.+) for the class (.+)} {$1 info method exists $0}
-TaskEvaluator Given {that (.+) is an instance of the class (.+)} {$0 info has type $1}
-TaskEvaluator Given {there exists a class (.+)} {::nsf::object::exists $0}
-TaskEvaluator Given {there exists a variable (.+) in the class (.+)} {if {[string length [$1 info variables $0]] < 1}  {set x 0} else {set x 1} }
+TaskEvaluator Given {there exists an object (.+)} {
+  ::nsf::object::exists $0
+}
+TaskEvaluator Given {there exists a variable (.+) in the object (.+)} {
+  $1 eval {info exists :$0}
+}
+TaskEvaluator Given {there exists a procedure (.+) for the object (.+)} {
+  $1 info object method exists $0
+}
+TaskEvaluator Given {there exists a procedure (.+) for the class (.+)} {
+  $1 info method exists $0
+}
+TaskEvaluator Given {that (.+) is an instance of the class (.+)} {
+  $0 info has type $1
+  }
+TaskEvaluator Given {there exists a class (.+)} {
+  ::nsf::object::exists $0
+}
+TaskEvaluator Given {there exists a variable (.+) in the class (.+)} {
+  if {[string length [$1 info variables $0]] < 1}  {
+    set x 0
+  } else {
+    set x 1
+  } 
+}
 
-
-TaskEvaluator When {the procedure (.+) of the object (.+) is called, then (.+) is returned} {if {[$1 $0] != "$2"} {set x 0} else {set x 1} }
-TaskEvaluator When {the parametrized-procedure (.+) of the instance (.+) with the parameter (.+) is called, then (.+) is returned} {if {[$1 $0 $2] != "$3"} {set x 0} else {set x 1} }
-TaskEvaluator When {the procedure (.+) of the instance (.+) is called, then (.+) is returned} {if {[$1 $0] != "$2"} {set x 0} else {set x 1} }
-TaskEvaluator When {the procedure (.+) of the instance (.+) is called, the program does not terminate with this configuration} {$1 $0; set x 0}
-TaskEvaluator When {the procedure (.+) of the instance (.+) is called, the program terminates with this configuration} {$1 $0; set x 1}
-
+TaskEvaluator When {the procedure (.+) of the object (.+) is called, then (.+) is returned} {
+  if {[$1 $0] != "$2"} {
+    set x 0
+  } else {
+    set x 1
+  }
+}
+TaskEvaluator When {the parametrized-procedure (.+) of the instance (.+) with the parameter (.+) is called, then (.+) is returned} {
+  if {[$1 $0 $2] != "$3"} {
+    set x 0
+  } else {
+    set x 1
+  }
+}
+TaskEvaluator When {the procedure (.+) of the instance (.+) is called, then (.+) is returned} {
+  if {[$1 $0] != "$2"} {
+    set x 0
+  } else {
+    set x 1
+  }
+}
+TaskEvaluator When {the procedure (.+) of the instance (.+) is called, the program does not terminate with this configuration} {
+  $1 $0; set x 0
+}
+TaskEvaluator When {the procedure (.+) of the instance (.+) is called, the program terminates with this configuration} {
+ $1 $0; set x 1
+}
 TaskEvaluator When {the procedure (.+) of the object (.+) is called, then the procedure (.+) is called} {global test; set test 0; nx::Object private method intercept1 args {
   global test
   set check \$test
