@@ -33,8 +33,6 @@ nx::Class create C {
 
 # Given that instanceA is an instance of the class C.
 # Given that instanceB is an instance of the class C.
-# Given that the instance instanceB is assigned to variable ref in the instance instanceA.
-# Given that the instance instanceA is assigned to variable ref in the instance instanceB.
 
 C create instanceA
 C create instanceB
@@ -49,7 +47,7 @@ instanceB eval {set :already_called 0}
 # Task 4:
 # Execute the procedure *foo* of *instanceA*.
 
-# When the procedure foo of the instance instanceA is called, the program does not terminate.
+# When the procedure foo of the instance instanceA is called, the program terminates with this configuration.
 
 instanceA foo
 
