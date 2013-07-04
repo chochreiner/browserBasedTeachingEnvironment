@@ -27,4 +27,4 @@
 
 
 # When the procedure foo of the object objectA is called then foobar is returned.
-# When the procedure foo of the object objectA is called then the procedure bar of the object objectB is called.
+# When the procedure foo of the object objectA is called, then the procedure bar is called.

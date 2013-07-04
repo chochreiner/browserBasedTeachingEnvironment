@@ -138,11 +138,6 @@ nx::Class create TaskEvaluator {
   }
 }
 
-#TODO find callstack solution
-TaskEvaluator When {the procedure (.+) of the instance (.+) is called, then the procedure (.+) of the instance (.+) is called} {set x 0}
-TaskEvaluator When {the procedure (.+) of the object (.+) is called, then the procedure (.+) of the object (.+) is called} {set x 0}
-
-
 TaskEvaluator Given {there exists an object (.+)} {::nsf::object::exists $0}
 TaskEvaluator Given {there exists a variable (.+) in the object (.+)} {$1 eval {info exists :$0}}
 TaskEvaluator Given {there exists a procedure (.+) for the object (.+)} {$1 info object method exists $0}
@@ -157,4 +152,25 @@ TaskEvaluator When {the parametrized-procedure (.+) of the instance (.+) with th
 TaskEvaluator When {the procedure (.+) of the instance (.+) is called, then (.+) is returned} {if {[$1 $0] != "$2"} {set x 0} else {set x 1} }
 TaskEvaluator When {the procedure (.+) of the instance (.+) is called, the program does not terminate with this configuration} {$1 $0; set x 0}
 TaskEvaluator When {the procedure (.+) of the instance (.+) is called, the program terminates with this configuration} {$1 $0; set x 1}
+
+TaskEvaluator When {the procedure (.+) of the object (.+) is called, then the procedure (.+) is called} {global test; set test 0; nx::Object private method intercept1 args {
+  global test
+  set check \$test
+  if {[current calledmethod] == "$2"} {
+    global test
+    set test 1
+  } else {
+    if {\$check != 1} {
+      global test
+      set test 0
+    }
+  } 
+  next
+  }
+  nx::Object filter add intercept1
+  $1 $0 
+  nx::Object filter delete intercept1
+  global test
+  set x \$test
+}
 
