@@ -136,7 +136,7 @@ Class create Httpd::Wrk {
      :replyCode 200
      if {[catch {set result [safeInterpreter eval $script]} msg x]} {
        set result "Errormessage: $msg \n\n"
-       append result "Stacktrace:\n  [dict get $x -errorinfo] \n\n"
+       append result "Stacktrace:\n [dict get $x -errorinfo] \n\n"       
        append result "on line: [dict get $x -errorline] \n\n"
        puts stderr result=$result
      }

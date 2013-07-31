@@ -191,16 +191,21 @@ TaskEvaluator When {the procedure (.+) of the instance (.+) is called, the progr
 TaskEvaluator When {the procedure (.+) of the instance (.+) is called, the program terminates with this configuration} {
  $1 $0; set x 1
 }
-TaskEvaluator When {the procedure (.+) of the object (.+) is called, then the procedure (.+) is called} {global test; set test 0; nx::Object private method intercept1 args {
-  global test
-  set check \$test
+TaskEvaluator When {the procedure (.+) of the object (.+) is called, then the procedure (.+) is called} {
+  nx::Object public method setter {value} {
+    set :test \$value
+  }
+  nx::Object public method getter {} {
+    return \${:test}
+  }
+ nx::Object setter 0
+ nx::Object private method intercept1 args {
+  set check [nx::Object getter]
   if {[current calledmethod] == "$2"} {
-    global test
-    set test 1
+    nx::Object setter 1
   } else {
     if {\$check != 1} {
-      global test
-      set test 0
+      nx::Object setter 0
     }
   } 
   next
@@ -208,7 +213,8 @@ TaskEvaluator When {the procedure (.+) of the object (.+) is called, then the pr
   nx::Object filter add intercept1
   $1 $0 
   nx::Object filter delete intercept1
-  global test
-  set x \$test
+  set x [nx::Object getter]
 }
+
+
 
