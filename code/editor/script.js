@@ -24,6 +24,24 @@ function changeScript() {
   xmlhttp.send();
 }
 
+function changeScript(script) {
+  var xmlhttp;
+  if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp=new XMLHttpRequest();
+  } else {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+   xmlhttp.onreadystatechange=function() {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+      var result = xmlhttp.responseText;
+      editor.setValue(result);
+      editor.gotoLine(1);
+    }
+  }
+  xmlhttp.open("GET","/script/" + script,true);
+  xmlhttp.send();
+}
+
 function submitToServer() {
 submitToServerValidation();
 submitToServerResult();

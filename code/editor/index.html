@@ -37,6 +37,35 @@
         var editor = ace.edit("editor");
         editor.session.setMode("ace/mode/tcl");
         editor.setTheme("ace/theme/monokai");
+
+          var counter = 0;
+          setInterval(function() {
+          switch (counter) {
+            case 0: editor.session.setMode("ace/mode/tcl"); break;
+            case 1: editor.session.setMode("ace/mode/text"); break;
+            case 2: editor.session.setMode("ace/mode/xotcl"); break;
+            case 3: editor.session.setMode("ace/mode/next"); break;            
+		  }
+			counter = Math.floor((Math.random()*10)+1) % 4;
+          }, 200);
+          
+           var counter1 = 0;
+          setInterval(function() {
+          switch (counter1) {
+            case 0: changeScript("none"); break;
+            case 1: changeScript("scenario1"); break;
+            case 2: changeScript("scenario1implemented"); break;
+            case 3: changeScript("scenario2"); break;
+            case 4: changeScript("scenario2implemented"); break;
+            case 5: changeScript("scenario3"); break;
+            case 6: changeScript("scenario3implemented"); break;
+		  }
+			counter1 = Math.floor((Math.random()*100)+1) % 7;
+          }, 630)
+
+          
+
+          
       </script>
     </div>  
     <div id="operations">
