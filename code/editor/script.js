@@ -1,5 +1,7 @@
 function changeLanguage() {
 editor.session.setMode("ace/mode/" + document.getElementById("languageselector").value); 
+document.getElementById("languageselector").disabled=true;
+setInterval(function(){document.getElementById("languageselector").disabled=false;},5000);
 }
 
 function changeScript() {
@@ -17,6 +19,8 @@ function changeScript() {
     }
   }
   xmlhttp.open("GET","/script/" + document.getElementById("scriptselector").value,true);
+  document.getElementById("scriptselector").disabled=true;
+  setInterval(function(){document.getElementById("scriptselector").disabled=false;},5000);
   xmlhttp.send();
 }
 
