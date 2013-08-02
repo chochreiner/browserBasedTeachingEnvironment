@@ -14,7 +14,3 @@ On the terminal:
 On the browser:
 
 * http://localhost:8081
-
-
-# External Versions
-Ace Editor Sha: bc66204d591c688277041c70e9ceaed3a3b959d8
