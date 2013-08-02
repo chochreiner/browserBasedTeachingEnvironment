@@ -373,7 +373,7 @@ var XoTclHighlightRules = function() {
             }, {
                 token : function(value) {
                     if (builtinFunctions.hasOwnProperty(value))
-                        return ["keyword", "method"];
+                        return "keyword.method";
                     else
                         return "identifier";
                 },

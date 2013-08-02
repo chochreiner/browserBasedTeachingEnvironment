@@ -373,7 +373,7 @@ var NextHighlightRules = function() {
             }, {
                 token : function(value) {
                     if (builtinFunctions.hasOwnProperty(value))
-                        return ["keyword", "method"];
+                        return "keyword.method";
                     else
                         return "identifier";
                 },
@@ -427,7 +427,7 @@ var NextHighlightRules = function() {
                 token : "support.function",
                 regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}|;|::"
             }, {
-                token : ["keyword", "method"],
+                token : "keyword.method",
                 regex : "(?:[:])[a-zA-Z0-9_/]+",
                 next  : "start"
             }, {
