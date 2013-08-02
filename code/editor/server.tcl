@@ -236,8 +236,7 @@ Class create Httpd::Wrk {
     :sendLine "Date: [:Date [clock seconds]]"
     if {$code >= 300} {
       :sendDynamicString "\n<title>Error: $code</title>\n\
-        Error $code: <b>[:getCode $code]</b><br>\n\
-        Url: ${:path}\n"
+        Error $code: <b>[:getCode $code]</b><br>\n"
     }
   }
   
