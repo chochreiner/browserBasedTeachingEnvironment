@@ -241,6 +241,7 @@ Class create Httpd::Wrk {
   
   :method getCode {code} {
     switch $code "200" {return "Data follows"} "404" {return "Not Found"} "400" {return "Bad Request"} default {return "Code not found"}
+  }
 }  
 
 proc bgerror {args} {
