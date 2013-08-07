@@ -8,8 +8,39 @@ nx::Class create TaskEvaluator {
   :property {steps {[dict create]}}
   # if set mode is 0, the validation aborts if one assertion is wrong
   :variable strictMode 0
+  :variable setupCode ""
+
+  :public method addSetupcode {} {
+    #Setup code for the rule: When the procedure (.+) of the object (.+) is called, then the procedure (.+) is called
+    append :setupCode {
+      nx::Object public method setIndicator {value} {
+        set :test $value
+      }
+      nx::Object public method getIndicator {} {
+        return ${:test}
+      }
+      nx::Object public method setMethodName {methodName} {
+        set :methodName $methodName
+      }
+      nx::Object public method getMethodName {} {
+        return ${:methodName}
+      }  
+      nx::Object private method intercept args {
+        set check [nx::Object getIndicator]
+        if {[current calledmethod] == [nx::Object getMethodName]} {
+          nx::Object setIndicator 1
+        } else {
+          if {$check != 1} {
+            nx::Object setIndicator 0
+          }
+        } 
+        next
+      }
+    }
+  }
 
   :public method setUp {story} {
+    :addSetupcode
     set lines [split $story "\n"]  
     
     foreach line $lines {    
@@ -20,6 +51,7 @@ nx::Class create TaskEvaluator {
         :When $rule
       }
     }
+    
   }
 
   :object method getMatchVars {regExprStr} {
@@ -75,7 +107,8 @@ nx::Class create TaskEvaluator {
     SafeInterp create safeInterpreter
     safeInterpreter requirePackage {nsf}
     safeInterpreter requirePackage {nx}
-        
+
+    safeInterpreter eval ${:setupCode}       
     safeInterpreter eval $scriptUnderTest
     safeInterpreter eval {set outcome ""}
 
@@ -105,7 +138,6 @@ nx::Class create TaskEvaluator {
       }
     }
         
-    
     set outcome [:generateFeedback [safeInterpreter eval {return $outcome}] $scriptUnderTest]    
     return $outcome
   }
@@ -136,7 +168,12 @@ nx::Class create TaskEvaluator {
   :public method disableStrictMode {} {
     set :strictMode 0
   }
+  
 }
+
+
+
+
 
 TaskEvaluator Given {there exists an object (.+)} {
   ::nsf::object::exists $0
@@ -191,30 +228,16 @@ TaskEvaluator When {the procedure (.+) of the instance (.+) is called, the progr
 TaskEvaluator When {the procedure (.+) of the instance (.+) is called, the program terminates with this configuration} {
  $1 $0; set x 1
 }
+#requires rule specific setupCode to work
 TaskEvaluator When {the procedure (.+) of the object (.+) is called, then the procedure (.+) is called} {
-  nx::Object public method setter {value} {
-    set :test \$value
-  }
-  nx::Object public method getter {} {
-    return \${:test}
-  }
- nx::Object setter 0
- nx::Object private method intercept1 args {
-  set check [nx::Object getter]
-  if {[current calledmethod] == "$2"} {
-    nx::Object setter 1
-  } else {
-    if {\$check != 1} {
-      nx::Object setter 0
-    }
-  } 
-  next
-  }
-  nx::Object filter add intercept1
+  nx::Object setMethodName "$2"
+  nx::Object setIndicator 0
+  nx::Object filter add intercept
   $1 $0 
-  nx::Object filter delete intercept1
-  set x [nx::Object getter]
+  nx::Object filter delete intercept
+  set x [nx::Object getIndicator]  
 }
+
 
 
 
