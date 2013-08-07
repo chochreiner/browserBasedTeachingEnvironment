@@ -56,7 +56,6 @@ Class create Httpd::Wrk {
   
   :public method receiveLine {line n} {
     upvar $line received $n nrBytes
-    set :line $line
     set nrBytes [gets ${:socket} received]
     puts stderr "[self] got:  <$received>"
   }
