@@ -1,7 +1,7 @@
 function changeLanguage() {
 editor.session.setMode("ace/mode/" + document.getElementById("languageselector").value); 
 document.getElementById("languageselector").disabled=true;
-setInterval(function(){document.getElementById("languageselector").disabled=false;},5000);
+setInterval(function(){document.getElementById("languageselector").disabled=false;},1000);
 }
 
 function changeScript() {
@@ -20,16 +20,19 @@ function changeScript() {
   }
   xmlhttp.open("GET","/script/" + document.getElementById("scriptselector").value,true);
   document.getElementById("scriptselector").disabled=true;
-  setInterval(function(){document.getElementById("scriptselector").disabled=false;},5000);
+  setInterval(function(){document.getElementById("scriptselector").disabled=false;},1000);
   xmlhttp.send();
 }
 
 function submitToServer() {
+document.getElementById("submit").disabled=true;
 submitToServerValidation();
 submitToServerResult();
+document.getElementById("submit").disabled=false;
 }
 
 function submitToServerValidation() {
+
   var xmlhttp;
   if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
     xmlhttp=new XMLHttpRequest();
