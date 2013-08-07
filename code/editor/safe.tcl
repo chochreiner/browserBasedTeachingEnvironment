@@ -50,19 +50,19 @@ nx::Class create SafeInterp {
   :public method eval {script} {
     #interp share {} stdout ${:interp}
     interp alias ${:interp} puts {} :fancyputs
-    set  :asdfghjkl ""
+    set  :aVariableNameThatMustNotBeUsedAtAnyTimeInAScript ""
     append evalscript $script
     set result [${:interp} eval $script]
-    if {[string length ${:asdfghjkl}] > 3} {
-     return ${:asdfghjkl}
+    if {[string length ${:aVariableNameThatMustNotBeUsedAtAnyTimeInAScript}] > 3} {
+     return ${:aVariableNameThatMustNotBeUsedAtAnyTimeInAScript}
     } else {
      return $result
     } 
   }
   
   :method fancyputs {text} {
-    append :asdfghjkl $text; 
-    append :asdfghjkl "\n"
+    append :aVariableNameThatMustNotBeUsedAtAnyTimeInAScript $text; 
+    append :aVariableNameThatMustNotBeUsedAtAnyTimeInAScript "\n"
   }
   
 
