@@ -48,21 +48,20 @@ nx::Class create SafeInterp {
   }
   
   :public method eval {script} {
-    #interp share {} stdout ${:interp}
     interp alias ${:interp} puts {} :fancyputs
-    set  :aVariableNameThatMustNotBeUsedAtAnyTimeInAScript ""
+    set  :textStorageVariableWithAVariableNameThatMustNotBeUsedAtAnyTimeInAScript ""
     append evalscript $script
     set result [${:interp} eval $script]
-    if {[string length ${:aVariableNameThatMustNotBeUsedAtAnyTimeInAScript}] > 3} {
-     return ${:aVariableNameThatMustNotBeUsedAtAnyTimeInAScript}
+    if {[string length ${:textStorageVariableWithAVariableNameThatMustNotBeUsedAtAnyTimeInAScript}] > 3} {
+     return ${:textStorageVariableWithAVariableNameThatMustNotBeUsedAtAnyTimeInAScript}
     } else {
      return $result
     } 
   }
   
   :method fancyputs {text} {
-    append :aVariableNameThatMustNotBeUsedAtAnyTimeInAScript $text; 
-    append :aVariableNameThatMustNotBeUsedAtAnyTimeInAScript "\n"
+    append :textStorageVariableWithAVariableNameThatMustNotBeUsedAtAnyTimeInAScript $text; 
+    append :textStorageVariableWithAVariableNameThatMustNotBeUsedAtAnyTimeInAScript "\n"
   }
   
 
