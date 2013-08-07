@@ -76,9 +76,9 @@ Class create Httpd::Wrk {
   }
 
   :public method header {} {
-    :receiveLine :line :n  
+    :receiveLine line :n  
     if {${:n} > 0} { 	
-      if {[regexp {^([^:]+): *(.+)$} ${:line} _ key value]} {
+      if {[regexp {^([^:]+): *(.+)$} ${line} _ key value]} {
         set :meta([string tolower $key]) $value
       }
     } else {
