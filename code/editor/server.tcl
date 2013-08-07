@@ -65,8 +65,8 @@ Class create Httpd::Wrk {
   }  
 
   :public method firstLine {} {
-    :receiveLine :line :n  
-    if {[regexp {^(GET|POST) +([^ ]+) +HTTP/.*$} ${:line} _ :method :path]} {
+    :receiveLine line n  
+    if {[regexp {^(GET|POST) +([^ ]+) +HTTP/.*$} ${line} _ :method :path]} {
       set :fileName ./${:path}
       regsub {/$} ${:fileName} /index.html :fileName
       :fileevent readable header
