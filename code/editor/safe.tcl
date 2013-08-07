@@ -1,4 +1,4 @@
-#package req nx::test
+package provide SafeInterp 1.0
 
 nx::Class create SafeInterp {
   

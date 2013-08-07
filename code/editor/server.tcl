@@ -4,10 +4,11 @@ namespace import -force ::xotcl::*
 package require nx
 namespace import -force ::nx::*
 
+set auto_path [concat . $auto_path]
+package req TaskEvaluator
+
 array set opt {-port 8081}
 array set opt $argv
-
-source [file join [file dirname [info script]] taskEvaluator.tcl]
 
 Class create Httpd {
   :property {port 80}

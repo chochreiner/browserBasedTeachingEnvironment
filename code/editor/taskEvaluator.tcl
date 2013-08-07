@@ -1,7 +1,9 @@
+package provide TaskEvaluator 1.0
+
+package req SafeInterp
+
 package require nx
 namespace import -force ::nx::*
-
-source [file join [file dirname [info script]] safe.tcl]
 
 nx::Class create TaskEvaluator {
 
